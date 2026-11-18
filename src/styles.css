@@ -2459,7 +2459,7 @@ h2 {
 /* Hinweise des Service Workers (offline bereit, neue Version): schwebend, verschieben nichts */
 .sw-hinweis {
   position: fixed;
-  top: 12px;
+  bottom: 24px;
   left: 0;
   right: 0;
   z-index: 70;
@@ -2493,6 +2493,11 @@ h2 {
   box-shadow: var(--schatten-gross);
   animation: toast-rein 0.35s cubic-bezier(0.2, 0.9, 0.3, 1.2) both;
 }
+/* Info-Pille (offline bereit): Haken in fester Erfolgsfarbe, unabhängig vom Plan */
+.toast-info .toast-haken {
+  background: var(--gruen);
+  color: var(--bg);
+}
 .toast-haken {
   flex: none;
   display: grid;
@@ -2505,7 +2510,8 @@ h2 {
   font-size: 0.9rem;
 }
 @media (max-width: 899px) {
-  .toast-bereich {
+  .toast-bereich,
+  .sw-hinweis {
     bottom: calc(84px + env(safe-area-inset-bottom));
   }
 }
