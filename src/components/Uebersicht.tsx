@@ -13,10 +13,10 @@ import {
 } from '../lib/berechnung';
 import { formatDatumLang, formatZeitraum, heuteISO, MONATE } from '../lib/datum';
 import { bundeslandName } from '../lib/feiertage';
-import { formatEffizienz, formatZahl } from '../lib/format';
-import { aktiveVarianteVon, istPaar, personName, zeigeVarianten } from '../lib/plan';
+import { effizienzText, formatEffizienz, formatZahl } from '../lib/format';
+import { aktiveVarianteVon, alleNamen, istPaar, personName, zeigeVarianten } from '../lib/plan';
 import type { PersonId, Plan, Variante } from '../lib/types';
-import { Hilfe, PersonPunkt } from './ui';
+import { PersonPunkt } from './ui';
 
 export function VariantenUmschalter({
   plan,
@@ -75,56 +75,94 @@ export function UeberschneidungsHinweis({ liste, plan }: { liste: Ueberschneidun
   );
 }
 
-function nochKlasse(n: number) {
-  if (n < 0) return 'wert-rot';
-  if (n > 0) return 'wert-gelb';
-  return 'wert-gruen';
-}
-
-function nochText(n: number) {
-  if (n < 0) return 'zu viel verplant';
-  if (n > 0) return 'noch offen';
-  return 'alles verplant ✓';
+/** Fortschrittsring: eingeplante Tage als Bogen in der Personenfarbe, in der Mitte die übrigen Tage */
+export function Fortschrittsring({
+  eingeplant,
+  verfuegbar,
+  farbe,
+  name,
+}: {
+  eingeplant: number;
+  verfuegbar: number;
+  farbe: string;
+  name: string;
+}) {
+  const r = 52;
+  const umfang = 2 * Math.PI * r;
+  const ueber = eingeplant > verfuegbar;
+  const anteil = verfuegbar > 0 ? Math.min(1, eingeplant / verfuegbar) : eingeplant > 0 ? 1 : 0;
+  const uebrig = verfuegbar - eingeplant;
+  const beschreibung = ueber
+    ? `${name}: ${formatZahl(eingeplant)} von ${formatZahl(verfuegbar)} Urlaubstagen eingeplant – ${formatZahl(-uebrig)} zu viel`
+    : `${name}: ${formatZahl(eingeplant)} von ${formatZahl(verfuegbar)} Urlaubstagen eingeplant, ${formatZahl(uebrig)} übrig`;
+  return (
+    <div className={`ring ${ueber ? 'ring-ueber' : ''}`} role="img" aria-label={beschreibung}>
+      <svg viewBox="0 0 128 128" width="128" height="128" aria-hidden="true">
+        <circle className="ring-spur" cx="64" cy="64" r={r} />
+        {anteil > 0 && (
+        <circle
+          className="ring-bogen"
+          cx="64"
+          cy="64"
+          r={r}
+          stroke={ueber ? undefined : farbe}
+          strokeDasharray={`${umfang * anteil} ${umfang}`}
+          transform="rotate(-90 64 64)"
+        />
+        )}
+      </svg>
+      <span className="ring-mitte" aria-hidden="true">
+        <strong>{formatZahl(Math.abs(uebrig))}</strong>
+        <span>{ueber ? 'zu viel' : uebrig === 1 ? 'Tag übrig' : 'Tage übrig'}</span>
+      </span>
+    </div>
+  );
 }
 
 function TrackerKarte({ t, plan, variante }: { t: Tracker; plan: Plan; variante: Variante }) {
   const basis = Math.max(t.verfuegbar, t.verplant, 1);
   const anteil = (n: number) => `${Math.min(100, (n / basis) * 100)}%`;
+  const person = plan.personen.find((p) => p.id === t.person);
   const name = personName(plan, t.person);
   const mehrereVarianten = zeigeVarianten(plan);
+  const uebrig = t.nochVerfuegbar;
   return (
     <article className={`karte tracker tracker-${t.person}`} aria-labelledby={`tracker-${t.person}`}>
       <h2 id={`tracker-${t.person}`}>
         <PersonPunkt person={t.person} /> {name}
       </h2>
-      <dl className="tracker-zeilen">
-        <div>
-          <dt>Urlaubsanspruch</dt>
-          <dd>{formatZahl(t.anspruch)}</dd>
-        </div>
-        <div>
-          <dt>+ Resturlaub</dt>
-          <dd>{formatZahl(t.resturlaub)}</dd>
-        </div>
-        <div className="summe">
-          <dt>= verfügbar</dt>
-          <dd>{formatZahl(t.verfuegbar)}</dd>
-        </div>
-        <div>
-          <dt>verplant{mehrereVarianten ? ` (Variante ${variante.name})` : ''}</dt>
-          <dd>{formatZahl(t.verplant)}</dd>
-        </div>
-        <div className={`gross ${nochKlasse(t.nochVerfuegbar)}`}>
-          <dt>noch verfügbar</dt>
-          <dd>
-            {formatZahl(t.nochVerfuegbar)} <span className="wert-text">{nochText(t.nochVerfuegbar)}</span>
-          </dd>
-        </div>
-      </dl>
+      <div className="tracker-oben">
+        <Fortschrittsring eingeplant={t.verplant} verfuegbar={t.verfuegbar} farbe={person?.farbe ?? 'currentColor'} name={name} />
+        <dl className="tracker-zeilen">
+          <div>
+            <dt>Urlaubstage im Jahr</dt>
+            <dd>{formatZahl(t.anspruch)}</dd>
+          </div>
+          <div>
+            <dt>+ Resturlaub</dt>
+            <dd>{formatZahl(t.resturlaub)}</dd>
+          </div>
+          <div className="summe">
+            <dt>= zusammen</dt>
+            <dd>{formatZahl(t.verfuegbar)}</dd>
+          </div>
+          <div>
+            <dt>schon eingeplant{mehrereVarianten ? ` (Variante ${variante.name})` : ''}</dt>
+            <dd>{formatZahl(t.verplant)}</dd>
+          </div>
+          <div className={`gross ${uebrig < 0 ? 'wert-rot' : uebrig > 0 ? 'wert-gelb' : 'wert-gruen'}`}>
+            <dt>{uebrig < 0 ? 'zu viel eingeplant' : 'noch übrig'}</dt>
+            <dd>
+              {formatZahl(Math.abs(uebrig))}
+              {uebrig === 0 && <span className="wert-text">alles eingeplant ✓</span>}
+            </dd>
+          </div>
+        </dl>
+      </div>
       <div
         className="balken-stapel"
         role="img"
-        aria-label={`${formatZahl(t.verplant)} von ${formatZahl(t.verfuegbar)} Tagen verplant: ${formatZahl(t.genehmigt)} genehmigt, ${formatZahl(t.beantragt)} beantragt, ${formatZahl(t.nichtBeantragt)} noch nicht beantragt`}
+        aria-label={`${formatZahl(t.verplant)} von ${formatZahl(t.verfuegbar)} Tagen eingeplant: ${formatZahl(t.genehmigt)} genehmigt, ${formatZahl(t.beantragt)} beantragt, ${formatZahl(t.nichtBeantragt)} noch nicht beantragt`}
       >
         <span className="seg seg-genehmigt" style={{ width: anteil(t.genehmigt) }} />
         <span className="seg seg-beantragt" style={{ width: anteil(t.beantragt) }} />
@@ -159,43 +197,63 @@ function TrackerKarte({ t, plan, variante }: { t: Tracker; plan: Plan; variante:
           <dt>Freie Tage insgesamt</dt>
           <dd>{formatZahl(t.freieTage)}</dd>
         </div>
-        <div>
-          <dt>Effizienz (freie Tage je Urlaubstag)</dt>
-          <dd>{formatEffizienz(t.effizienz, 2)}</dd>
+        <div className="tracker-effizienz">
+          <dt>So viel bringt’s</dt>
+          <dd>{effizienzText(t.effizienz)}</dd>
         </div>
       </dl>
     </article>
   );
 }
 
-function Countdown({ plan }: { plan: Plan }) {
+/** Begrüßung mit großem Countdown bis zum nächsten Urlaub */
+function Begruessung({ plan }: { plan: Plan }) {
   const heute = heuteISO();
   const n = naechsterUrlaub(plan, heute);
-  if (!n) {
-    return (
-      <article className="karte countdown">
-        <h2>Nächster Urlaub</h2>
-        <p>Es ist kein weiterer Urlaub geplant.</p>
-      </article>
-    );
-  }
+  const euer = istPaar(plan) ? 'eurem' : 'deinem';
   return (
-    <article className="karte countdown" aria-live="polite">
-      <h2>{n.laufend ? 'Gerade im Urlaub 🌴' : 'Nächster Urlaub'}</h2>
-      <p className="countdown-zahl">
-        {n.laufend ? (
+    <section className="begruessung" aria-labelledby="titel-begruessung">
+      <div className="begruessung-text">
+        <p className="begruessung-hallo">
+          Hallo {alleNamen(plan)} <span aria-hidden="true">👋</span>
+        </p>
+        {!n ? (
           <>
-            noch <strong>{n.nochTage}</strong> {n.nochTage === 1 ? 'Tag' : 'Tage'}
+            <h2 id="titel-begruessung" className="begruessung-titel">
+              Noch kein Urlaub geplant – Zeit zum Träumen! <span aria-hidden="true">☀️</span>
+            </h2>
+            <p className="begruessung-unter">Der Brückentag-Finder zeigt dir die besten Gelegenheiten für {plan.planungsjahr}.</p>
+            <a className="btn begruessung-knopf" href="#/brueckentage">
+              Brückentage ansehen
+            </a>
           </>
         ) : (
           <>
-            in <strong>{n.tageBis}</strong> {n.tageBis === 1 ? 'Tag' : 'Tagen'}
+            <h2 id="titel-begruessung" className="begruessung-titel">
+              {n.laufend ? (
+                n.nochTage === 1 ? (
+                  <>Heute ist der letzte Urlaubstag – genieß ihn!</>
+                ) : (
+                  <>
+                    Schönen Urlaub! Noch <span className="begruessung-zahl">{n.nochTage}</span> Tage
+                  </>
+                )
+              ) : n.tageBis === 1 ? (
+                <>Morgen geht’s los!</>
+              ) : (
+                <>
+                  Noch <span className="begruessung-zahl">{n.tageBis}</span> Tage bis zu {euer} nächsten Urlaub
+                </>
+              )}{' '}
+              <span aria-hidden="true">{n.laufend ? '🌴' : '☀️'}</span>
+            </h2>
+            <p className="begruessung-unter">
+              <strong>{n.block.name || 'Urlaub'}</strong> · {formatZeitraum(n.block.von, n.block.bis)}
+            </p>
           </>
         )}
-      </p>
-      <p className="countdown-name">{n.block.name}</p>
-      <p className="unterzeile">{formatZeitraum(n.block.von, n.block.bis)}</p>
-    </article>
+      </div>
+    </section>
   );
 }
 
@@ -356,12 +414,7 @@ export function Uebersicht({ plan, onVariante }: { plan: Plan; onVariante: (id: 
         </div>
       </div>
 
-      {plan.bloecke.length === 0 && (
-        <Hilfe>
-          Noch nichts geplant. Tipp: Im <a href="#/brueckentage">Brückentag-Finder</a> stehen die besten Gelegenheiten
-          für {plan.planungsjahr}, oder du markierst im <a href="#/kalender">Kalender</a> einfach einen Zeitraum.
-        </Hilfe>
-      )}
+      <Begruessung plan={plan} />
 
       <VariantenUmschalter plan={plan} onWahl={onVariante} gross />
 
@@ -371,18 +424,19 @@ export function Uebersicht({ plan, onVariante }: { plan: Plan; onVariante: (id: 
         {tracker.map((t) => (
           <TrackerKarte key={t.person} t={t} plan={plan} variante={variante} />
         ))}
-        <div className="stapel">
-          <Countdown plan={plan} />
-          {paar && (
-            <article className="karte kennzahl-karte">
+        {paar && (
+          <div className="stapel">
+            <article className="karte kennzahl-karte gemeinsam-karte">
               <h2>
-                <PersonPunkt person="alle" /> Gemeinsame Urlaubstage
+                <PersonPunkt person="alle" /> Zusammen frei
               </h2>
               <p className="gross-zahl">{formatZahl(gemeinsam)}</p>
-              <p className="unterzeile">Arbeitstage, an denen ihr beide Urlaub habt</p>
+              <p className="unterzeile">
+                {gemeinsam === 1 ? 'Arbeitstag' : 'Arbeitstage'}, an denen ihr beide Urlaub habt – Zeit für gemeinsame Erlebnisse.
+              </p>
             </article>
-          )}
-        </div>
+          </div>
+        )}
       </div>
 
       <div className="raster-2">

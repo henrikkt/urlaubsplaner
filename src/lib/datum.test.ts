@@ -49,3 +49,15 @@ describe('Datum', () => {
     expect(formatEffizienz(null)).toBe('–');
   });
 });
+
+describe('Effizienz in Alltagssprache', () => {
+  it('ganze und gerundete Werte', async () => {
+    const { effizienzText, effizienzKurz } = await import('./format');
+    expect(effizienzText(2)).toBe('1 Urlaubstag = 2 freie Tage');
+    expect(effizienzText(4)).toBe('1 Urlaubstag = 4 freie Tage');
+    expect(effizienzText(12 / 7)).toBe('1 Urlaubstag ≈ 1,7 freie Tage');
+    expect(effizienzText(1)).toBe('1 Urlaubstag = 1 freier Tag');
+    expect(effizienzText(null)).toBe('ohne Urlaubstag');
+    expect(effizienzKurz(16 / 9)).toBe('1,8 freie Tage je Urlaubstag');
+  });
+});

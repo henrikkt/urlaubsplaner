@@ -103,10 +103,11 @@ test('Varianten: standardmäßig aus, einschalten mit Erklärung, ausschalten mi
   const projekt = info.project.name;
   await assistent(page, `${projekt}-varianten`);
 
-  // AUS: kein Umschalter, kein Vergleich, „verplant“ ohne Variante
+  // AUS: kein Umschalter, kein Vergleich, „schon eingeplant“ ohne Variante
   await expect(page.getByRole('radiogroup', { name: 'Aktive Variante' })).toHaveCount(0);
   await expect(page.getByRole('heading', { name: 'Variantenvergleich' })).toHaveCount(0);
-  await expect(page.getByText('verplant', { exact: true }).first()).toBeVisible();
+  await expect(page.getByText('schon eingeplant', { exact: true }).first()).toBeVisible();
+  await expect(page.getByText(/eingeplant \(Variante/)).toHaveCount(0);
   await page.goto('./#/bloecke');
   await expect(page.getByLabel('Zählt mit?').first()).toBeVisible();
   await expect(page.getByLabel('Variante', { exact: true })).toHaveCount(0);
