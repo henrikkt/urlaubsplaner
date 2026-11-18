@@ -14,7 +14,7 @@ import { UpdateHinweis } from './components/UpdateHinweis';
 import { usePlan, type SpeicherStatus } from './hooks/usePlan';
 import { geheZu, useRoute, type Route } from './hooks/useRoute';
 import { addiereTage, heuteISO } from './lib/datum';
-import { alleNamen, fuegeBlockHinzu } from './lib/plan';
+import { alleNamen, fuegeBlockHinzu, zeigeVarianten } from './lib/plan';
 import { backupFaellig } from './speicher/arbeitsbereich';
 
 const NAVIGATION: { route: Route; text: string; kurz: string; icon: IconName; nur?: 'desktop' | 'handy' }[] = [
@@ -180,7 +180,7 @@ export function App() {
           ) : (
             <span className="plan-titel">{plan.name}</span>
           )}
-          {plan.varianten.length > 1 && (
+          {zeigeVarianten(plan) && (
             <div className="kopf-variante">
               <span className="kopf-label">Variante</span>
               <VariantenUmschalter plan={plan} onWahl={setVariante} />

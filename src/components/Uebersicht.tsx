@@ -14,7 +14,7 @@ import {
 import { formatDatumLang, formatZeitraum, heuteISO, MONATE } from '../lib/datum';
 import { bundeslandName } from '../lib/feiertage';
 import { formatEffizienz, formatZahl } from '../lib/format';
-import { aktiveVarianteVon, istPaar, personName } from '../lib/plan';
+import { aktiveVarianteVon, istPaar, personName, zeigeVarianten } from '../lib/plan';
 import type { PersonId, Plan, Variante } from '../lib/types';
 import { Hilfe, PersonPunkt } from './ui';
 
@@ -27,7 +27,7 @@ export function VariantenUmschalter({
   onWahl: (id: string) => void;
   gross?: boolean;
 }) {
-  if (plan.varianten.length < 2) return null;
+  if (!zeigeVarianten(plan)) return null;
   return (
     <div className={gross ? 'varianten-gross' : 'varianten-klein'} role="radiogroup" aria-label="Aktive Variante">
       {plan.varianten.map((v) => {
@@ -91,7 +91,7 @@ function TrackerKarte({ t, plan, variante }: { t: Tracker; plan: Plan; variante:
   const basis = Math.max(t.verfuegbar, t.verplant, 1);
   const anteil = (n: number) => `${Math.min(100, (n / basis) * 100)}%`;
   const name = personName(plan, t.person);
-  const mehrereVarianten = plan.varianten.length > 1;
+  const mehrereVarianten = zeigeVarianten(plan);
   return (
     <article className={`karte tracker tracker-${t.person}`} aria-labelledby={`tracker-${t.person}`}>
       <h2 id={`tracker-${t.person}`}>
@@ -387,7 +387,7 @@ export function Uebersicht({ plan, onVariante }: { plan: Plan; onVariante: (id: 
 
       <div className="raster-2">
         <Monatsuebersicht plan={plan} />
-        {plan.varianten.length > 1 && <Variantenvergleich plan={plan} onWahl={onVariante} />}
+        {zeigeVarianten(plan) && <Variantenvergleich plan={plan} onWahl={onVariante} />}
       </div>
     </section>
   );

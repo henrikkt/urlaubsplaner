@@ -86,27 +86,30 @@ const blockSchema = z.strictObject({
   notiz: text(MAX_NOTIZ),
 });
 
-export const planSchema = z
-  .strictObject({
-    schema: z.literal(PLAN_SCHEMA),
-    id,
-    name: text(80).trim().min(1, 'Name des Plans fehlt'),
-    bundesland: z.enum(BUNDESLAND_CODES as [string, ...string[]], { error: 'unbekanntes Bundesland' }),
-    regionaleFeiertage: z.array(z.enum(REGIONALE_FEIERTAGE.map((r) => r.id) as [string, ...string[]])).max(20),
-    planungsjahr: jahr,
-    personen: z.array(personSchema).min(1, 'mindestens eine Person').max(2, 'höchstens zwei Personen'),
-    farbeGemeinsam: farbe,
-    varianten: z.array(varianteSchema).min(1, 'mindestens eine Variante').max(12, 'höchstens 12 Varianten'),
-    aktiveVariante: id,
-    feiertage: z.array(feiertagSchema).max(200),
-    schulferien: z.array(ferienSchema).max(200),
-    besondereTage: z.array(besondererTagSchema).max(500),
-    bloecke: z.array(blockSchema).max(2000),
-    revision: z.number().int().nonnegative().optional(),
-    geaendertAm: z.string().max(40).optional(),
-  })
-  .superRefine((p, ctx) => {
-    p.personen.forEach((person, i) => {
+/** Felder, die Version 2 und 3 gemeinsam haben */
+const planFelder = {
+  id,
+  name: text(80).trim().min(1, 'Name des Plans fehlt'),
+  bundesland: z.enum(BUNDESLAND_CODES as [string, ...string[]], { error: 'unbekanntes Bundesland' }),
+  regionaleFeiertage: z.array(z.enum(REGIONALE_FEIERTAGE.map((r) => r.id) as [string, ...string[]])).max(20),
+  planungsjahr: jahr,
+  personen: z.array(personSchema).min(1, 'mindestens eine Person').max(2, 'höchstens zwei Personen'),
+  farbeGemeinsam: farbe,
+  varianten: z.array(varianteSchema).min(1, 'mindestens eine Variante').max(12, 'höchstens 12 Varianten'),
+  aktiveVariante: id,
+  feiertage: z.array(feiertagSchema).max(200),
+  schulferien: z.array(ferienSchema).max(200),
+  besondereTage: z.array(besondererTagSchema).max(500),
+  bloecke: z.array(blockSchema).max(2000),
+  revision: z.number().int().nonnegative().optional(),
+  geaendertAm: z.string().max(40).optional(),
+};
+
+type PlanBasis = z.infer<z.ZodObject<typeof planFelder>>;
+
+/** Querverweise prüfen (Personen-IDs, Varianten, Blöcke) */
+function pruefeVerweise(p: PlanBasis, ctx: z.RefinementCtx) {
+  p.personen.forEach((person, i) => {
       if (person.id !== PERSON_IDS[i]) {
         ctx.addIssue({ code: 'custom', path: ['personen', i, 'id'], message: `erwartet „${PERSON_IDS[i]}“` });
       }
@@ -132,7 +135,25 @@ export const planSchema = z
       }
       if (b.bis < b.von) ctx.addIssue({ code: 'custom', path: ['bloecke', i, 'bis'], message: '„Bis“ liegt vor „Von“' });
     });
-  });
+}
+
+/** Version 3 (aktuell): zusätzlich "Varianten vergleichen" an/aus */
+export const planSchema = z
+  .strictObject({ schema: z.literal(PLAN_SCHEMA), variantenAktiv: z.boolean(), ...planFelder })
+  .superRefine(pruefeVerweise);
+
+/** Version 2: wie Version 3, aber ohne variantenAktiv */
+const planV2Schema = z.strictObject({ schema: z.literal(2), ...planFelder }).superRefine(pruefeVerweise);
+
+/** Sind Blöcke einer Variante zugeordnet (also weder "Immer" noch "Aus" = geparkt)? */
+export function variantenGenutzt(p: Pick<PlanBasis, 'bloecke'>): boolean {
+  return p.bloecke.some((b) => b.variante !== IMMER && b.variante !== AUS);
+}
+
+/** Migration 2 → 3: Variantenvergleich nur einschalten, wenn er tatsächlich genutzt wird */
+function migriereV2(alt: z.infer<typeof planV2Schema>): Plan {
+  return { ...(alt as unknown as Plan), schema: PLAN_SCHEMA, variantenAktiv: variantenGenutzt(alt) };
+}
 
 // ---------------------------------------------------------------------------
 // Schema Version 1 (alte Einzel-Datei mit genau zwei festen Personen) → Migration
@@ -223,6 +244,7 @@ function migriereV1(alt: PlanV1, neueId: () => string): Plan {
     planungsjahr: alt.planungsjahr,
     personen,
     farbeGemeinsam: STANDARD_FARBEN.gemeinsam,
+    variantenAktiv: variantenGenutzt({ bloecke }),
     varianten,
     aktiveVariante: alt.aktiveVariante,
     feiertage: alt.feiertage,
@@ -284,6 +306,13 @@ export function pruefePlanMitInfo(roh: unknown, neueId: () => string = standardI
   }
   if (typeof obj.schema === 'number' && obj.schema > PLAN_SCHEMA) {
     throw new PlanFehler('Der Plan stammt aus einer neueren Version der App. Bitte die App aktualisieren.');
+  }
+  if (obj.schema === 2) {
+    const r = planV2Schema.safeParse(obj);
+    if (!r.success) throw new PlanFehler(`Der Plan ist beschädigt oder unvollständig:\n${fehlerText(r.error)}`);
+    const pruef = planSchema.safeParse(migriereV2(r.data));
+    if (!pruef.success) throw new PlanFehler(`Der Plan konnte nicht umgewandelt werden:\n${fehlerText(pruef.error)}`);
+    return { plan: pruef.data as Plan, migriert: true };
   }
   if (obj.version === 1) {
     const r = planV1Schema.safeParse(obj);

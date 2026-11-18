@@ -1,6 +1,8 @@
 import { baue, differenzTage, istGueltigesDatum, istWochenende, jahrVon, jedenTag, monatVon, wochentag, zerlege } from './datum';
 import { aktiveVarianteVon } from './plan';
 import {
+  ALLE_BLOECKE,
+  AUS,
   IMMER,
   type BesondererTag,
   type Ferien,
@@ -54,6 +56,8 @@ function personAus(ctx: Kontext, p: PersonId): Person | undefined {
  * Ausnahme Varianten mit startetLeer (eigene Planung): dort zählen nur Blöcke genau dieser Variante.
  */
 export function istAktiv(b: Urlaubsblock, aktiv: Variante): boolean {
+  // Variantenvergleich aus: alles zählt außer geparkten Ideen
+  if (aktiv.id === ALLE_BLOECKE) return b.variante !== AUS;
   if (aktiv.startetLeer) return b.variante === aktiv.id;
   return b.variante === IMMER || b.variante === aktiv.id;
 }

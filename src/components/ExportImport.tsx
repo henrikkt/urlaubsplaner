@@ -2,7 +2,7 @@ import { useRef, useState } from 'react';
 import type { PlanZustand } from '../hooks/usePlan';
 import { formatDatum, heuteISO } from '../lib/datum';
 import { aktiveBloecke, erzeugeCsv, erzeugeIcs } from '../lib/export';
-import { aktiveVarianteVon } from '../lib/plan';
+import { aktiveVarianteVon, zeigeVarianten } from '../lib/plan';
 import { PlanFehler } from '../lib/schema';
 import type { Plan } from '../lib/types';
 import { erzeugeBackup, leseImport } from '../speicher/arbeitsbereich';
@@ -112,7 +112,7 @@ export function ExportImport({ zustand }: { zustand: PlanZustand }) {
           <h2>Kalender (.ics)</h2>
           <p>
             {anzahlAktiv} {anzahlAktiv === 1 ? 'Urlaubsblock' : 'Urlaubsblöcke'}
-            {plan.varianten.length > 1 ? ` der Variante ${v.name}` : ''} als ganztägige Termine – für Outlook, Google Kalender
+            {zeigeVarianten(plan) ? ` der Variante ${v.name}` : ''} als ganztägige Termine – für Outlook, Google Kalender
             oder das Handy.
           </p>
           <button
@@ -121,7 +121,7 @@ export function ExportImport({ zustand }: { zustand: PlanZustand }) {
             disabled={anzahlAktiv === 0}
             onClick={() =>
               ladeHerunter(
-                `${dateiName(plan.name)}${plan.varianten.length > 1 ? `-variante-${dateiName(v.name)}` : ''}.ics`,
+                `${dateiName(plan.name)}${zeigeVarianten(plan) ? `-variante-${dateiName(v.name)}` : ''}.ics`,
                 erzeugeIcs(plan),
                 'text/calendar;charset=utf-8',
               )

@@ -26,8 +26,9 @@ export interface NeuVorlage {
   notiz?: string;
 }
 
-/** Standard-Variante für neue Blöcke: in einer "eigenen Planung" diese, sonst die gewählte (bzw. "Immer" bei nur einer) */
+/** Standard-Variante für neue Blöcke: ohne Variantenvergleich "Immer", sonst die gewählte Variante */
 function standardVariante(plan: Plan): string {
+  if (!plan.variantenAktiv) return IMMER;
   const v = aktiveVarianteVon(plan);
   return plan.varianten.length > 1 || v.startetLeer ? v.id : IMMER;
 }

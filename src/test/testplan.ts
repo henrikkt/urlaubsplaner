@@ -51,6 +51,7 @@ export function testplan(): Plan {
       },
     ],
     farbeGemeinsam: STANDARD_FARBEN.gemeinsam,
+    variantenAktiv: true,
     varianten: [
       { id: 'A', name: 'A', beschreibung: 'Winter + Spätsommer', startetLeer: false },
       { id: 'B', name: 'B', beschreibung: 'Frühsommer + Herbst', startetLeer: false },

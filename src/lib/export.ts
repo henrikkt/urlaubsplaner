@@ -1,7 +1,7 @@
 import { addiereTage, formatDatum, istGueltigesDatum } from './datum';
 import { erstelleKontext, istAktiv, kennzahlenBlock, personStatus } from './berechnung';
 import { formatEffizienz, formatZahl } from './format';
-import { aktiveVarianteVon, istPaar, varianteName, werText } from './plan';
+import { aktiveVarianteVon, istPaar, varianteName, werText, zeigeVarianten } from './plan';
 import type { Plan, Urlaubsblock } from './types';
 
 // ---------------------------------------------------------------------------
@@ -66,7 +66,8 @@ export function erzeugeIcs(plan: Plan, jetzt: Date = new Date()): string {
   ];
   for (const b of aktiveBloecke(plan)) {
     const status = plan.personen.map((p) => `Status ${p.name}: ${personStatus(b, p.id)}`).join(', ');
-    const beschreibung = [b.notiz.trim(), `Variante: ${varianteName(plan, b.variante)}`, status].filter(Boolean).join('\n');
+    const variante = zeigeVarianten(plan) ? `Variante: ${varianteName(plan, b.variante)}` : '';
+    const beschreibung = [b.notiz.trim(), variante, status].filter(Boolean).join('\n');
     zeilen.push(
       'BEGIN:VEVENT',
       `UID:${b.id}-${plan.planungsjahr}@urlaubsplaner.local`,
@@ -100,10 +101,11 @@ export function erzeugeCsv(plan: Plan): string {
   const ctx = erstelleKontext(plan);
   const v = aktiveVarianteVon(plan);
   const paar = istPaar(plan);
+  const mitVarianten = zeigeVarianten(plan);
   const kopf = [
     'Anlass',
-    'Variante',
-    'Aktiv',
+    ...(mitVarianten ? ['Variante'] : []),
+    mitVarianten ? 'Aktiv' : 'Zählt mit',
     ...(paar ? ['Wer'] : []),
     'Von',
     'Bis',
@@ -118,8 +120,8 @@ export function erzeugeCsv(plan: Plan): string {
     const k = kennzahlenBlock(b, ctx);
     return [
       b.name,
-      varianteName(plan, b.variante),
-      istAktiv(b, v) ? 'ja' : 'nein',
+      ...(mitVarianten ? [varianteName(plan, b.variante)] : []),
+      istAktiv(b, v) ? 'ja' : mitVarianten ? 'nein' : 'geparkt',
       ...(paar ? [werText(plan, b.wer)] : []),
       formatDatum(b.von),
       formatDatum(b.bis),

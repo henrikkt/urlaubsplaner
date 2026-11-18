@@ -2,8 +2,16 @@ import { useId } from 'react';
 import { kennzahlenBlock, personStatus, type Kontext } from '../lib/berechnung';
 import { formatDatumLang } from '../lib/datum';
 import { formatEffizienz, formatZahl } from '../lib/format';
-import { blockVarianteText, blockVariantenOptionen, istPaar, naechsterStatus, validiereBlock, werOptionen } from '../lib/plan';
-import type { Plan, Urlaubsblock, Wer } from '../lib/types';
+import {
+  blockVarianteText,
+  blockVariantenOptionen,
+  istPaar,
+  naechsterStatus,
+  validiereBlock,
+  werOptionen,
+  zeigeVarianten,
+} from '../lib/plan';
+import { AUS, IMMER, type Plan, type Urlaubsblock, type Wer } from '../lib/types';
 import { FerienBadge, StatusChip } from './ui';
 
 export function Kennzahlen({ block, ctx, plan }: { block: Urlaubsblock; ctx: Kontext; plan: Plan }) {
@@ -71,7 +79,7 @@ export function BlockEditor({
             </p>
           )}
         </div>
-        {varianten.length > 2 || !varianten.includes(block.variante) ? (
+        {zeigeVarianten(plan) ? (
           <div className="feld">
             <label htmlFor={`${id}-variante`}>Variante</label>
             <select id={`${id}-variante`} value={block.variante} onChange={(e) => onChange({ variante: e.target.value })}>
@@ -85,12 +93,13 @@ export function BlockEditor({
         ) : (
           <div className="feld">
             <label htmlFor={`${id}-variante`}>Zählt mit?</label>
-            <select id={`${id}-variante`} value={block.variante} onChange={(e) => onChange({ variante: e.target.value })}>
-              {varianten.map((v) => (
-                <option key={v} value={v}>
-                  {v === 'Aus' ? 'Nein (nur Idee)' : 'Ja'}
-                </option>
-              ))}
+            <select
+              id={`${id}-variante`}
+              value={block.variante === AUS ? AUS : IMMER}
+              onChange={(e) => onChange({ variante: e.target.value })}
+            >
+              <option value={IMMER}>Ja, zählt mit</option>
+              <option value={AUS}>Nein, geparkt (nur Idee)</option>
             </select>
           </div>
         )}

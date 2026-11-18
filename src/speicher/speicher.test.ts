@@ -33,6 +33,15 @@ describe('BrowserSpeicher (IndexedDB)', () => {
     expect(g.defekt).toHaveLength(1);
   });
 
+  it('ältere Pläne (Format 2) werden beim Laden migriert und als migriert gemeldet', async () => {
+    const s = neuerSpeicher();
+    const { variantenAktiv: _v, ...rest } = testplan();
+    await s.save({ ...leererArbeitsbereich(), plaene: [{ ...rest, schema: 2 } as never], aktiverPlanId: 'plan-test' });
+    const g = (await s.load())!;
+    expect(g.migriert).toBe(true);
+    expect(g.ab.plaene[0]).toEqual(testplan());
+  });
+
   it('alles löschen', async () => {
     const s = neuerSpeicher();
     await s.save({ ...leererArbeitsbereich(), plaene: [testplan()], aktiverPlanId: 'plan-test' });

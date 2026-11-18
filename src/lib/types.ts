@@ -4,7 +4,7 @@ import type { Bundesland } from './feiertage';
 export type ISODatum = string;
 
 /** Aktuelle Schema-Version eines Plans. Ältere Versionen werden beim Laden migriert. */
-export const PLAN_SCHEMA = 2 as const;
+export const PLAN_SCHEMA = 3 as const;
 
 /** Personen haben feste IDs: "p1" und optional "p2" (bestimmt auch die Farbe). */
 export type PersonId = 'p1' | 'p2';
@@ -42,6 +42,8 @@ export const STANDARD_FARBEN: Record<PersonId | 'gemeinsam', string> = {
 /** Block-Variante: "Immer", "Aus" oder die ID einer Variante des Plans */
 export const IMMER = 'Immer';
 export const AUS = 'Aus';
+/** Interne ID, wenn der Variantenvergleich ausgeschaltet ist: alle Blöcke außer "Aus" zählen */
+export const ALLE_BLOECKE = '*';
 export type BlockVariante = string;
 
 export interface Variante {
@@ -107,6 +109,11 @@ export interface Plan {
   personen: Person[];
   /** Farbe für gemeinsamen Urlaub */
   farbeGemeinsam: string;
+  /**
+   * "Varianten vergleichen" an/aus. Aus: kein Umschalter, alle Blöcke außer "Aus" (geparkt) zählen.
+   * Die Varianten bleiben gespeichert, damit sie beim Einschalten wieder da sind.
+   */
+  variantenAktiv: boolean;
   /** mindestens eine Variante */
   varianten: Variante[];
   aktiveVariante: string;

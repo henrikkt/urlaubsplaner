@@ -71,6 +71,7 @@ describe('Schema v2', () => {
     });
     expect(() => pruefePlan(p)).not.toThrow();
     expect(p.varianten.map((v) => v.name)).toEqual(['A', 'B']);
+    expect(p.variantenAktiv).toBe(false);
     expect(p.feiertage.length).toBe(12);
     expect(p.schulferien.some((f) => /Sommer/.test(f.name))).toBe(true);
   });
@@ -145,6 +146,17 @@ describe('Migration Version 1 → 2', () => {
   it('übernimmt Varianten A–D, D als eigene Planung, und die aktive Variante', () => {
     expect(plan.varianten.map((v) => `${v.id}:${v.startetLeer}`)).toEqual(['A:false', 'B:false', 'C:false', 'D:true']);
     expect(plan.aktiveVariante).toBe('D');
+  });
+
+  it('direkt auf Version 3: Variantenvergleich AN, weil ein Block in Variante C liegt', () => {
+    expect(plan.schema).toBe(3);
+    expect(plan.variantenAktiv).toBe(true);
+  });
+
+  it('alter Plan nur mit „Immer“-Blöcken: Variantenvergleich AUS', () => {
+    const alt = planV1();
+    alt.bloecke = [alt.bloecke[0]];
+    expect(pruefePlan(alt).variantenAktiv).toBe(false);
   });
 
   it('übernimmt Feiertage, Ferien, besondere Tage und Revision unverändert', () => {

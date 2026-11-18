@@ -14,7 +14,7 @@ Eine Web-App zur Urlaubsplanung für eine oder zwei Personen – mit Brückentag
 - **Jahreskalender** mit Farben je Person, Feiertagen, Ferien und besonderen Tagen. Urlaub per Antippen von Start- und Endtag anlegen.
 - **Brückentag-Finder** und **Urlaubstipps:** die besten Gelegenheiten, sortiert nach Effizienz (freie Tage pro Urlaubstag), mit Schulferien-Check.
 - **Tracker** je Person: verfügbar, verplant, beantragt, genehmigt, Tage in den Schulferien, Effizienz. Dazu Countdown und Monatsübersicht.
-- **Varianten:** Ideen vergleichen („Immer“, eigene Varianten mit freiem Namen, „Aus“). Eine Variante kann als „eigene Planung“ leer starten.
+- **Varianten (optional):** Unter *Einstellungen → Varianten vergleichen* lassen sich Ideen vergleichen („Immer“, eigene Varianten mit freiem Namen, „Aus“). Eine Variante kann als „eigene Planung“ leer starten. Neue Pläne starten ohne Varianten – dann zählen alle Blöcke, einzelne Ideen lassen sich „parken“.
 - **Mehrere Pläne** pro Browser (z. B. „Urlaub 2027“ und „Urlaub 2028“) mit Umschalter, Duplizieren und Löschen.
 - **Export:** Backup als JSON, Kalenderdatei (.ics) für Outlook/Google/Handy, CSV für Excel, Druckansicht (A4 quer).
 - **Installierbar (PWA)** und offline nutzbar. Bei neuen Versionen erscheint „Neue Version verfügbar – jetzt aktualisieren“.
@@ -108,7 +108,8 @@ Das Skript `scripts/fetch-holidays.mjs` schreibt `src/data/schulferien.json` (wi
 
 ## Rechenregeln
 
-- **Aktiv** ist ein Block mit Variante „Immer“ oder der gewählten Variante. „Aus“ ist nie aktiv. Eine Variante mit „startet leer“ zählt nur ihre eigenen Blöcke.
+- **Ohne Variantenvergleich** zählt jeder Block außer geparkten („Aus“).
+- **Mit Variantenvergleich** ist ein Block aktiv, wenn er „Immer“ oder der gewählten Variante zugeordnet ist. „Aus“ ist nie aktiv. Eine Variante mit „startet leer“ zählt nur ihre eigenen Blöcke.
 - **Tageswert je Person:** 0 an Feiertagen und an Tagen, an denen die Person nicht arbeitet. Am 24.12./31.12. gilt der eingestellte Wert (1 / 0,5 / 0). Sonst 1. Nur Tage im Planungsjahr zählen.
 - **Urlaubstage eines Blocks** = Summe der Tageswerte, falls die Person betroffen ist.
 - **Tage frei** = bis − von + 1. **Effizienz** = Tage frei / größte Zahl an Urlaubstagen einer Person.
@@ -121,7 +122,8 @@ Das Skript `scripts/fetch-holidays.mjs` schreibt `src/data/schulferien.json` (wi
 
 - **Eigenes Hash-Routing** statt React Router: weniger Abhängigkeiten, funktioniert auf GitHub Pages ohne Umwege.
 - **Personen-IDs `p1`/`p2`:** Farben und Klassen hängen an der Position. Wird Person 1 entfernt, rückt Person 2 nach.
-- **Datenformat versioniert:** Pläne tragen `schema: 2`. Ältere Dateien (Version 1) werden beim Laden oder Import automatisch umgewandelt.
+- **Datenformat versioniert:** Pläne tragen `schema: 3`. Ältere Dateien und Backups (Version 1 und 2) werden beim Laden oder Import automatisch umgewandelt.
+- **Varianten optional:** Beim Umstellen von Version 2 wird der Vergleich nur eingeschaltet, wenn mindestens ein Block einer Variante zugeordnet ist. Geparkte Blöcke („Aus“) zählen dabei nicht als Variante. Beim Ausschalten fragt die App, ob solche Blöcke zu „Immer“ werden oder geparkt werden sollen. Die Varianten selbst bleiben gespeichert.
 - **Server-Modus ohne Service Worker:** Dort gleicht die App ständig mit dem Server ab. Offline-Fähigkeit und Update-Hinweis gibt es im Browser-Modus.
 - **Regionale Feiertage:** In Bayern ist Mariä Himmelfahrt standardmäßig angehakt (gilt in den meisten Gemeinden), die anderen regionalen Tage nicht.
 - **24.12. und 31.12.** sind im Startassistenten als ganzer Urlaubstag vorbelegt (gesetzlich normale Arbeitstage) – lieber nicht zu knapp rechnen.

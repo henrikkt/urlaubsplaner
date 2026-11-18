@@ -99,6 +99,44 @@ test('neuer Nutzer: Assistent, planen, neu laden, Export, Import, löschen', asy
   expect(fehler, fehler.join('\n')).toEqual([]);
 });
 
+test('Varianten: standardmäßig aus, einschalten mit Erklärung, ausschalten mit Rückfrage', async ({ page }, info) => {
+  const projekt = info.project.name;
+  await assistent(page, `${projekt}-varianten`);
+
+  // AUS: kein Umschalter, kein Vergleich, „verplant“ ohne Variante
+  await expect(page.getByRole('radiogroup', { name: 'Aktive Variante' })).toHaveCount(0);
+  await expect(page.getByRole('heading', { name: 'Variantenvergleich' })).toHaveCount(0);
+  await expect(page.getByText('verplant', { exact: true }).first()).toBeVisible();
+  await page.goto('./#/bloecke');
+  await expect(page.getByLabel('Zählt mit?').first()).toBeVisible();
+  await expect(page.getByLabel('Variante', { exact: true })).toHaveCount(0);
+
+  // Einschalten → Erklärung, Umschalter erscheint
+  await page.goto('./#/einstellungen');
+  const schalter = page.getByRole('switch', { name: 'Varianten vergleichen' });
+  await expect(schalter).toHaveAttribute('aria-checked', 'false');
+  await schalter.click();
+  await expect(schalter).toHaveAttribute('aria-checked', 'true');
+  await expect(page.getByText('Mit Varianten kannst du zwei Planungen vergleichen')).toBeVisible();
+  await bild(page, '09-varianten-an', projekt);
+  await expect(page.getByRole('radiogroup', { name: 'Aktive Variante' }).first()).toBeVisible();
+
+  // Einen Block der Variante A zuordnen
+  await page.goto('./#/bloecke');
+  await page.getByLabel('Variante', { exact: true }).first().selectOption({ label: 'Nur Variante A' });
+
+  // Ausschalten → Rückfrage → parken
+  await page.goto('./#/einstellungen');
+  await page.getByRole('switch', { name: 'Varianten vergleichen' }).click();
+  const frage = page.getByRole('dialog', { name: 'Varianten ausschalten' });
+  await expect(frage).toContainText('Ein Block gehört zu einer Variante');
+  await bild(page, '10-varianten-aus-frage', projekt);
+  await frage.getByRole('button', { name: 'Parken' }).click();
+  await expect(page.getByRole('switch', { name: 'Varianten vergleichen' })).toHaveAttribute('aria-checked', 'false');
+  await page.goto('./#/bloecke');
+  await expect(page.getByText('○ geparkt').first()).toBeVisible();
+});
+
 test('Reload auf einer Unterseite funktioniert (Hash-Routing)', async ({ page }) => {
   await page.goto('./#/hilfe');
   await page.reload();

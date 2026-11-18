@@ -36,7 +36,7 @@ import {
   wochentag,
 } from '../lib/datum';
 import { formatEffizienz, formatZahl, tageText } from '../lib/format';
-import { aktiveVarianteVon, istPaar, personName, werText } from '../lib/plan';
+import { aktiveVarianteVon, istPaar, personName, werText, zeigeVarianten } from '../lib/plan';
 import { tippsProTag, urlaubstipps } from '../lib/tipps';
 import type { BesondererTag, PersonId, Plan, Urlaubsblock } from '../lib/types';
 import { utText, vorlageAus } from './Brueckentage';
@@ -385,7 +385,7 @@ export function Kalender({
     rasterRef.current?.querySelector<HTMLElement>(`[data-datum="${ziel}"]`)?.focus();
   };
 
-  const mehrereVarianten = plan.varianten.length > 1;
+  const mehrereVarianten = zeigeVarianten(plan);
 
   return (
     <section aria-labelledby="titel-kalender" className="kalender-seite">

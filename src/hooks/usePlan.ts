@@ -108,8 +108,11 @@ function useBrowserPlan(): PlanZustand {
       setStatus('gespeichert');
       if (g?.defekt.length) {
         setHinweis(`${g.defekt.length} beschädigte(r) Plan/Pläne konnten nicht geladen werden. Die Rohdaten wurden im Browser gesichert.`);
-      } else if (g?.migriert) {
-        setHinweis('Deine Daten wurden auf das neue Format umgestellt.');
+      }
+      if (g?.migriert) {
+        // Umstellung auf das aktuelle Format still und sofort speichern
+        offen.current = true;
+        void speichern();
       }
       if (!g) setPersist(await fordereDauerhaftAn());
       else setPersist(await persistStatus());
@@ -119,7 +122,7 @@ function useBrowserPlan(): PlanZustand {
       setStatus('fehler');
       setHinweis('Die gespeicherten Daten konnten nicht gelesen werden.');
     }
-  }, [speicher]);
+  }, [speicher, speichern]);
 
   useEffect(() => {
     void laden();

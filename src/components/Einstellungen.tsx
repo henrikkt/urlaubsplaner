@@ -5,6 +5,7 @@ import { bundeslandName, feiertageFuer, type Bundesland } from '../lib/feiertage
 import {
   aktualisierePerson,
   aktualisiereVariante,
+  bloeckeInVarianten,
   bloeckeNurFuer,
   entfernePerson,
   entferneVariante,
@@ -14,11 +15,12 @@ import {
   neueId,
   setzeOrtUndJahr,
   setzeRegionaleFeiertage,
+  setzeVariantenAktiv,
 } from '../lib/plan';
 import { FERIEN_QUELLE, hatFerienDaten, schulferienFuer } from '../lib/schulferien';
-import type { Plan } from '../lib/types';
+import { AUS, IMMER, type Plan } from '../lib/types';
 import { BundeslandWahl, jahresOptionen, PersonFelder, RegionaleFeiertageWahl } from './Formular';
-import { Hilfe, PersonPunkt } from './ui';
+import { Dialog, Hilfe, PersonPunkt } from './ui';
 
 const SYMBOLE = ['🎂', '⭐', '❤️', '✈️', '🎉', '📌', '💍', '🎓'];
 
@@ -233,24 +235,101 @@ function Personen({ plan, aendere }: { plan: Plan; aendere: Aendere }) {
   );
 }
 
+export const VARIANTEN_ERKLAERUNG =
+  "Mit Varianten kannst du zwei Planungen vergleichen, z. B. Sommerurlaub im Juni oder im September. Blöcke mit 'Immer' zählen in beiden.";
+
 function Varianten({ plan, aendere }: { plan: Plan; aendere: Aendere }) {
+  const [geradeAn, setGeradeAn] = useState(false);
+  const [ausFrage, setAusFrage] = useState(false);
+  const zugeordnet = bloeckeInVarianten(plan);
+
+  const umschalten = () => {
+    if (!plan.variantenAktiv) {
+      aendere((p) => setzeVariantenAktiv(p, true));
+      setGeradeAn(true);
+    } else if (zugeordnet > 0) {
+      setAusFrage(true);
+    } else {
+      aendere((p) => setzeVariantenAktiv(p, false));
+      setGeradeAn(false);
+    }
+  };
+
+  const ausschalten = (werden: typeof IMMER | typeof AUS) => {
+    aendere((p) => setzeVariantenAktiv(p, false, werden));
+    setAusFrage(false);
+    setGeradeAn(false);
+  };
+
   return (
     <article className="karte" aria-labelledby="einst-varianten">
       <div className="karten-kopf">
         <h2 id="einst-varianten">Varianten</h2>
         <button
           type="button"
-          className="btn btn-klein"
-          disabled={plan.varianten.length >= 12}
-          onClick={() => aendere((p) => fuegeVarianteHinzu(p, ''))}
+          role="switch"
+          aria-checked={plan.variantenAktiv}
+          className={`schalter-gross ${plan.variantenAktiv ? 'an' : ''}`}
+          onClick={umschalten}
         >
-          + Variante
+          <span className="switch-spur" aria-hidden="true">
+            <span className="switch-knopf" />
+          </span>
+          Varianten vergleichen
         </button>
       </div>
-      <Hilfe>
-        Mit Varianten vergleichst du verschiedene Ideen, z. B. „Sommer lang“ gegen „viele Kurztrips“. Blöcke mit „Immer“
-        zählen in jeder Variante. Eine Variante mit „startet leer“ ist eine eigene Planung ohne die „Immer“-Blöcke.
-      </Hilfe>
+
+      {!plan.variantenAktiv && (
+        <p className="unterzeile">
+          Aus: Alle Urlaubsblöcke zählen. Einzelne Ideen kannst du trotzdem „parken“, dann zählen sie nicht mit.
+        </p>
+      )}
+
+      {plan.variantenAktiv && (
+        <>
+          <p className={geradeAn ? 'hinweis hinweis-info' : 'hilfetext'} role={geradeAn ? 'status' : undefined}>
+            {VARIANTEN_ERKLAERUNG}
+          </p>
+          <VariantenListe plan={plan} aendere={aendere} />
+        </>
+      )}
+
+      <Dialog offen={ausFrage} titel="Varianten ausschalten" onSchliessen={() => setAusFrage(false)}>
+        <p>
+          {zugeordnet === 1 ? 'Ein Block gehört' : `${zugeordnet} Blöcke gehören`} zu einer Variante. Was soll mit{' '}
+          {zugeordnet === 1 ? 'ihm' : 'ihnen'} passieren?
+        </p>
+        <ul>
+          <li>
+            <strong>Zu „Immer“:</strong> {zugeordnet === 1 ? 'Er zählt' : 'Sie zählen'} ab jetzt mit.
+          </li>
+          <li>
+            <strong>Parken:</strong> {zugeordnet === 1 ? 'Er bleibt' : 'Sie bleiben'} als Idee gespeichert, {zugeordnet === 1 ? 'zählt' : 'zählen'} aber
+            nicht mit.
+          </li>
+        </ul>
+        <div className="dialog-fuss">
+          <button type="button" className="btn" onClick={() => setAusFrage(false)}>
+            Abbrechen
+          </button>
+          <button type="button" className="btn" onClick={() => ausschalten(AUS)}>
+            Parken
+          </button>
+          <button type="button" className="btn btn-primaer" onClick={() => ausschalten(IMMER)}>
+            Zu „Immer“
+          </button>
+        </div>
+      </Dialog>
+    </article>
+  );
+}
+
+function VariantenListe({ plan, aendere }: { plan: Plan; aendere: Aendere }) {
+  return (
+    <>
+      <p className="unterzeile">
+        Eine Variante mit „startet leer“ ist eine eigene Planung ohne die „Immer“-Blöcke.
+      </p>
       <ul className="liste-editor">
         {plan.varianten.map((v) => (
           <li key={v.id} className="liste-zeile">
@@ -286,7 +365,7 @@ function Varianten({ plan, aendere }: { plan: Plan; aendere: Aendere }) {
               disabled={plan.varianten.length <= 1}
               onClick={() => {
                 const n = plan.bloecke.filter((b) => b.variante === v.id).length;
-                if (window.confirm(`Variante „${v.name}“ löschen?${n ? `\n\n${n} Block/Blöcke werden auf „Aus“ gesetzt (bleiben als Idee erhalten).` : ''}`))
+                if (window.confirm(`Variante „${v.name}“ löschen?${n ? `\n\n${n} Block/Blöcke werden geparkt (bleiben als Idee erhalten).` : ''}`))
                   aendere((p) => entferneVariante(p, v.id));
               }}
             >
@@ -295,7 +374,16 @@ function Varianten({ plan, aendere }: { plan: Plan; aendere: Aendere }) {
           </li>
         ))}
       </ul>
-    </article>
+      <button
+        type="button"
+        className="btn btn-klein"
+        style={{ marginTop: 8 }}
+        disabled={plan.varianten.length >= 12}
+        onClick={() => aendere((p) => fuegeVarianteHinzu(p, ''))}
+      >
+        + Variante
+      </button>
+    </>
   );
 }
 

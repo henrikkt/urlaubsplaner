@@ -2,6 +2,7 @@ import { istGueltigesDatum } from './datum';
 import { feiertageFuer, regionaleFeiertageFuer, type Bundesland } from './feiertage';
 import { schulferienFuer } from './schulferien';
 import {
+  ALLE_BLOECKE,
   AUS,
   IMMER,
   PERSON_IDS,
@@ -69,8 +70,36 @@ export function werOptionen(plan: Plan): { wert: Wer; text: string }[] {
   ];
 }
 
+/** Ohne Variantenvergleich: alle Blöcke außer "Aus" (geparkt) zählen */
+export const ALLE_BLOECKE_VARIANTE: Variante = { id: ALLE_BLOECKE, name: '', beschreibung: '', startetLeer: false };
+
+/** Die Variante, nach der gerechnet wird (bei ausgeschaltetem Vergleich: alle Blöcke) */
 export function aktiveVarianteVon(plan: Plan): Variante {
+  if (!plan.variantenAktiv) return ALLE_BLOECKE_VARIANTE;
   return plan.varianten.find((v) => v.id === plan.aktiveVariante) ?? plan.varianten[0];
+}
+
+/** Variantenvergleich eingeschaltet und mehr als eine Variante vorhanden? */
+export function zeigeVarianten(plan: Plan): boolean {
+  return plan.variantenAktiv && plan.varianten.length > 1;
+}
+
+/** Anzahl Blöcke, die einer Variante zugeordnet sind (weder "Immer" noch geparkt) */
+export function bloeckeInVarianten(plan: Plan): number {
+  return plan.bloecke.filter((b) => b.variante !== IMMER && b.variante !== AUS).length;
+}
+
+/**
+ * Variantenvergleich ein- oder ausschalten. Beim Ausschalten werden Blöcke, die einer Variante
+ * zugeordnet sind, zu "Immer" (zählen mit) oder "Aus" (geparkt) – je nach Wahl.
+ */
+export function setzeVariantenAktiv(plan: Plan, an: boolean, bloeckeWerden: typeof IMMER | typeof AUS = IMMER): Plan {
+  if (an) return { ...plan, variantenAktiv: true };
+  return {
+    ...plan,
+    variantenAktiv: false,
+    bloecke: plan.bloecke.map((b) => (b.variante !== IMMER && b.variante !== AUS ? { ...b, variante: bloeckeWerden } : b)),
+  };
 }
 
 export function varianteName(plan: Plan, id: string): string {
@@ -91,8 +120,7 @@ export function blockVarianteText(plan: Plan, id: string): string {
 }
 
 export function blockVariantenOptionen(plan: Plan): string[] {
-  const mehrere = plan.varianten.length > 1;
-  return [IMMER, ...(mehrere ? plan.varianten.map((v) => v.id) : []), AUS];
+  return [IMMER, ...(zeigeVarianten(plan) ? plan.varianten.map((v) => v.id) : []), AUS];
 }
 
 // ---------------------------------------------------------------------------
@@ -220,6 +248,8 @@ export function neuerPlan(o: PlanOptionen): Plan {
     planungsjahr: o.planungsjahr,
     personen,
     farbeGemeinsam: STANDARD_FARBEN.gemeinsam,
+    // Varianten sind für Einsteiger verwirrend → erst auf Wunsch in den Einstellungen einschalten
+    variantenAktiv: false,
     varianten: standardVarianten(),
     aktiveVariante: 'A',
     feiertage: feiertageFuer(o.bundesland, o.planungsjahr, regional),

@@ -1,7 +1,15 @@
 import { useMemo } from 'react';
 import { erstelleKontext, istAktiv, ueberschneidungen } from '../lib/berechnung';
 import { formatZeitraum } from '../lib/datum';
-import { aktiveVarianteVon, aktualisiereBlock, dupliziereBlock, entferneBlock, sortiereBloecke, varianteName } from '../lib/plan';
+import {
+  aktiveVarianteVon,
+  aktualisiereBlock,
+  dupliziereBlock,
+  entferneBlock,
+  sortiereBloecke,
+  varianteName,
+  zeigeVarianten,
+} from '../lib/plan';
 import type { Plan, Urlaubsblock } from '../lib/types';
 import { BlockEditor } from './BlockEditor';
 import { UeberschneidungsHinweis } from './Uebersicht';
@@ -19,7 +27,7 @@ export function Bloecke({
   const ctx = useMemo(() => erstelleKontext(plan), [plan]);
   const ueber = useMemo(() => ueberschneidungen(plan), [plan]);
   const v = aktiveVarianteVon(plan);
-  const mehrereVarianten = plan.varianten.length > 1;
+  const mehrereVarianten = zeigeVarianten(plan);
 
   const loeschen = (b: Urlaubsblock) => {
     if (window.confirm(`Block „${b.name || 'ohne Namen'}“ wirklich löschen?`)) aendere((p) => entferneBlock(p, b.id));
@@ -32,7 +40,7 @@ export function Bloecke({
           <h1 id="titel-bloecke">Urlaubsblöcke</h1>
           <p className="unterzeile">
             {!mehrereVarianten
-              ? 'Alle Blöcke außer „Aus“ zählen.'
+              ? 'Alle Blöcke zählen – außer geparkten Ideen.'
               : v.startetLeer
                 ? `Variante ${v.name} (eigene Planung) startet leer – aktiv sind nur Blöcke dieser Variante.`
                 : `Aktiv sind Blöcke mit „Immer“ und der gewählten Variante ${v.name}.`}{' '}
@@ -67,8 +75,11 @@ export function Bloecke({
             <li key={b.id} className={`karte block-karte ${aktiv ? '' : 'inaktiv'}`} id={`block-${b.id}`}>
               <div className="block-karte-kopf">
                 <span className={`badge ${aktiv ? 'badge-aktiv' : 'badge-inaktiv'}`}>
-                  {aktiv ? '● zählt' : '○ zählt nicht'}
-                  {mehrereVarianten || b.variante === 'Aus' ? ` · ${varianteName(plan, b.variante)}` : ''}
+                  {mehrereVarianten
+                    ? `${aktiv ? '● zählt' : '○ zählt nicht'} · ${varianteName(plan, b.variante)}`
+                    : aktiv
+                      ? '● zählt mit'
+                      : '○ geparkt'}
                 </span>
                 <span className="zeitraum">{formatZeitraum(b.von, b.bis)}</span>
                 <span className="spacer" />

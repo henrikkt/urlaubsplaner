@@ -36,7 +36,7 @@ describe('Server-Datei', () => {
     const { plan } = await ladeOderMigriere(p);
     expect(plan?.personen[0].name).toBe('Eins');
     expect(plan?.revision).toBe(1);
-    expect(JSON.parse(await readFile(p.datei, 'utf8')).schema).toBe(2);
+    expect(JSON.parse(await readFile(p.datei, 'utf8')).schema).toBe(3);
   });
 
   it('migriert eine alte Datei einmalig und sichert vorher das Original', async () => {
@@ -57,6 +57,28 @@ describe('Server-Datei', () => {
     expect(zweit.plan?.revision).toBe(11);
     expect(zweit.plan?.id).toBe(erst.plan?.id);
     expect(await readdir(p.backupOrdner)).toHaveLength(1);
+  });
+
+  it('migriert eine Datei im Format 2 auf 3 (Varianten AN) und sichert vorher das Original', async () => {
+    const p = await pfade();
+    const { mkdir } = await import('node:fs/promises');
+    await mkdir(path.dirname(p.datei), { recursive: true });
+    const { variantenAktiv: _v, ...rest } = testplan();
+    const v2 = { ...rest, schema: 2, revision: 65 };
+    await writeFile(p.datei, JSON.stringify(v2));
+    const { plan, meldung } = await ladeOderMigriere(p);
+    expect(plan?.schema).toBe(3);
+    expect(plan?.variantenAktiv).toBe(true);
+    expect(plan?.revision).toBe(66);
+    expect(plan?.bloecke).toEqual(testplan().bloecke);
+    expect(meldung).toMatch(/Original gesichert/);
+    const backups = await readdir(p.backupOrdner);
+    expect(JSON.parse(await readFile(path.join(p.backupOrdner, backups[0]), 'utf8'))).toEqual(v2);
+  });
+
+  it('nimmt beim Speichern kein Schema 2 mehr an (veralteter Tab)', () => {
+    const { variantenAktiv: _v, ...rest } = testplan();
+    expect(() => pruefeEingang({ ...rest, schema: 2 })).toThrow(/neu laden/);
   });
 
   it('eine beschädigte Datei wird nicht überschrieben', async () => {
