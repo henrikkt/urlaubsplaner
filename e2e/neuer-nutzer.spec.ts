@@ -154,7 +154,7 @@ test('offline nach dem ersten Laden, Manifest und Service Worker', async ({ page
     return (await fetch(link.href)).json();
   });
   expect(manifest.name).toBe('Urlaubsplaner');
-  expect(manifest.theme_color).toBe('#1F3A5F');
+  expect(manifest.theme_color).toBe('#FFB088');
   expect(manifest.icons.some((i: { sizes: string }) => i.sizes === '512x512')).toBe(true);
   expect(manifest.icons.some((i: { purpose?: string }) => i.purpose === 'maskable')).toBe(true);
 

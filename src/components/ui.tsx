@@ -78,12 +78,18 @@ function helligkeit(hex: string): number {
 }
 
 /**
- * Weiße Schrift (wie im bisherigen Design), solange der Kontrast für fette Schrift reicht (≥ 3:1).
- * Auf hellen, selbst gewählten Farben wird automatisch dunkle Schrift verwendet.
+ * Weiße Schrift, solange sie WCAG AA für normalen Text erfüllt (≥ 4,5:1), sonst dunkle Schrift.
+ * Eine der beiden Varianten erreicht bei jeder Farbe mindestens 4,5:1.
  */
 export function textFarbeAuf(hex: string): string {
   const kontrastWeiss = 1.05 / (helligkeit(hex) + 0.05);
-  return kontrastWeiss >= 3 ? '#fff' : '#111';
+  return kontrastWeiss >= 4.5 ? '#fff' : '#111';
+}
+
+/** Kontrastverhältnis zweier Farben nach WCAG (1 … 21) */
+export function kontrastVerhaeltnis(a: string, b: string): number {
+  const [x, y] = [helligkeit(a), helligkeit(b)].sort((p, q) => q - p);
+  return (x + 0.05) / (y + 0.05);
 }
 
 /** CSS-Variablen für die Personenfarben eines Plans (werden per CSSOM gesetzt – CSP-sicher) */

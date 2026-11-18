@@ -293,6 +293,24 @@ export function setzeRegionaleFeiertage(plan: Plan, regional: string[]): Plan {
 // Personen
 // ---------------------------------------------------------------------------
 
+/** Weichen die Farben des Plans von den aktuellen Standardfarben ab? */
+export function hatEigeneFarben(plan: Plan): boolean {
+  const gleich = (a: string, b: string) => a.toLowerCase() === b.toLowerCase();
+  return (
+    !gleich(plan.farbeGemeinsam, STANDARD_FARBEN.gemeinsam) ||
+    plan.personen.some((p) => !gleich(p.farbe, STANDARD_FARBEN[p.id]))
+  );
+}
+
+/** Personen- und Gemeinsam-Farbe auf die aktuellen Standardfarben setzen (nur auf Wunsch des Nutzers). */
+export function standardFarbenUebernehmen(plan: Plan): Plan {
+  return {
+    ...plan,
+    farbeGemeinsam: STANDARD_FARBEN.gemeinsam,
+    personen: plan.personen.map((p) => ({ ...p, farbe: STANDARD_FARBEN[p.id] })),
+  };
+}
+
 export function aktualisierePerson(plan: Plan, id: PersonId, patch: Partial<Omit<Person, 'id'>>): Plan {
   return { ...plan, personen: plan.personen.map((p) => (p.id === id ? { ...p, ...patch } : p)) };
 }

@@ -1,80 +1,161 @@
+/* Schrift „Nunito“ – selbst gehostet (SIL Open Font License 1.1, siehe src/assets/fonts/OFL-Nunito.txt).
+   Variable Schrift, nur lateinisches Subset (inkl. Umlaute, ß, „“, €): eine Datei für alle Stärken. */
+@font-face {
+  font-family: 'Nunito';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 200 1000;
+  src: url('./assets/fonts/nunito-latin-variabel.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F,
+    U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
 /* ==========================================================================
-   Urlaubsplaner – Design-Tokens
+   Urlaubsplaner – Design-Tokens („Sommer & Sonne“)
    ========================================================================== */
 :root {
-  --akzent: #1f3a5f;
-  --akzent-text: #1f3a5f;
-  --akzent-hell: #e8eef6;
-  --bg: #f5f7fa;
+  /* Grundfarben – Richtung „Sommer & Sonne“ (alle Paare WCAG AA, siehe src/test/kontrast.test.ts) */
+  --bg: #fff7ee;
   --flaeche: #ffffff;
-  --flaeche-2: #f9fafb;
-  --text: #1b2430;
-  --text-2: #5a6472;
-  --rand: #e2e6ec;
-  --schatten: 0 1px 2px rgba(16, 24, 40, 0.05), 0 1px 3px rgba(16, 24, 40, 0.06);
+  --flaeche-2: #fff1e3;
+  --text: #2a1a12;
+  --text-2: #6e4f3f;
+  --rand: #f1dccb;
+  --rand-feld: #a57c66;
+  --schatten: 0 2px 4px rgba(120, 60, 20, 0.05), 0 8px 24px rgba(120, 60, 20, 0.08);
+  --schatten-gross: 0 4px 10px rgba(120, 60, 20, 0.08), 0 18px 40px rgba(120, 60, 20, 0.12);
+
+  /* Akzent (Knöpfe, Links, aktive Auswahl) */
+  --akzent: #c2410c;
+  --akzent-hover: #a3360a;
+  --akzent-auf: #ffffff;
+  --akzent-text: #b03a0b;
+  --akzent-hell: #ffe8d6;
+  --fokus: #2a1a12;
+
+  /* Navigation */
+  --sb-bg: linear-gradient(165deg, #ffb088 0%, #ffcf7a 100%);
+  --sb-bg-flach: #ffb088;
+  --sb-bg-flach-2: #ffcf7a;
+  --sb-text: #2a1a12;
+  --sb-text-2: #4a2a1a;
+  --sb-aktiv-bg: #ffffff;
+  --sb-aktiv-text: #a3360a;
+  --sb-hover: rgba(255, 255, 255, 0.4);
+
+  /* Countdown- und Begrüßungsverlauf */
+  --verlauf-1: #ff8a5b;
+  --verlauf-2: #ffc857;
+  --verlauf-text: #2a1a12;
+  --verlauf-text-2: #4a2a1a;
+
+  /* Jahreszeiten im Kalender (Band + Überschrift) */
+  --saison-winter: #7cc4e8;
+  --saison-winter-text: #1d5f86;
+  --saison-fruehling: #8bd17c;
+  --saison-fruehling-text: #2e6b30;
+  --saison-sommer: #ffb547;
+  --saison-sommer-text: #a04a06;
+  --saison-herbst: #e8875a;
+  --saison-herbst-text: #9c3d17;
 
   /* Fachfarben (Personenfarben werden zur Laufzeit aus dem Plan gesetzt) */
-  --gemeinsam: #2e9e5b;
+  --gemeinsam: #128563;
   --gemeinsam-text: #fff;
-  --person-1: #3b7dd8;
+  --person-1: #197bb4;
   --person-1-text: #fff;
-  --person-2: #d9468f;
+  --person-2: #e21767;
   --person-2-text: #fff;
-  --feiertag: #d93b3b;
-  --wochenende: #e5e7eb;
-  --ferien: #fff1bf;
-  --ferien-rand: #c0392b;
-  --ferien-streifen: #e9c34a;
+  --feiertag: #c62828;
+  --wochenende: #f3e7dc;
+  --ferien: #ffe3a3;
+  --ferien-rand: #b42318;
+  --ferien-streifen: #e0a526;
   --tipp: #0e7490;
-  --tipp-hell: #cff4fc;
+  --tipp-hell: #d3f3f7;
   --tipp-text: #0b4f63;
   --tag-bg: #ffffff;
-  --tag-text: #1b2430;
-  --tag-rand: #eceff3;
+  --tag-text: #2a1a12;
+  --tag-rand: #f1dccb;
 
-  --rot: #c62828;
-  --rot-hell: #fdecec;
-  --gelb: #8a6100;
-  --gelb-hell: #fff6d6;
-  --gruen: #237a3b;
-  --gruen-hell: #e5f5ea;
-  --orange: #c25a00;
-  --orange-hell: #fff0e1;
+  --rot: #b42318;
+  --rot-hell: #fee4e2;
+  --gelb: #8a5300;
+  --gelb-hell: #fff4d6;
+  --gruen: #166c40;
+  --gruen-hell: #e3f6ea;
+  --orange: #b54708;
+  --orange-hell: #ffedd5;
 
-  --radius: 12px;
-  --radius-klein: 8px;
-  --schrift: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --radius: 20px;
+  --radius-klein: 12px;
+  --schrift: 'Nunito', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --backdrop: rgba(42, 26, 18, 0.55);
   color-scheme: light dark;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --akzent-text: #9cc0ec;
-    --akzent-hell: #1d2a3b;
-    --bg: #0f141b;
-    --flaeche: #171e27;
-    --flaeche-2: #1c2430;
-    --text: #e7ebf0;
-    --text-2: #a0aab7;
-    --rand: #2b3542;
-    --schatten: 0 1px 2px rgba(0, 0, 0, 0.4);
-    --wochenende: #2c333d;
-    --ferien: #4a3f16;
-    --ferien-streifen: #b8952a;
-    --tipp: #22d3ee;
-    --tipp-hell: #123f4d;
-    --tipp-text: #cff4fc;
-    --tag-bg: #1c2430;
-    --tag-text: #e7ebf0;
-    --tag-rand: #26303c;
+    /* warmer Dunkelmodus: Dunkelbraun statt Blauschwarz */
+    --bg: #1a1411;
+    --flaeche: #241c17;
+    --flaeche-2: #2d241e;
+    --text: #f8ede4;
+    --text-2: #cdb8a9;
+    --rand: #3d3029;
+    --rand-feld: #8a7062;
+    --schatten: 0 2px 4px rgba(0, 0, 0, 0.3), 0 8px 24px rgba(0, 0, 0, 0.25);
+    --schatten-gross: 0 4px 10px rgba(0, 0, 0, 0.35), 0 18px 40px rgba(0, 0, 0, 0.35);
+
+    --akzent: #ff9a62;
+    --akzent-hover: #ffb184;
+    --akzent-auf: #1a1411;
+    --akzent-text: #ffa978;
+    --akzent-hell: #3a2418;
+    --fokus: #ffd9a8;
+
+    --sb-bg: linear-gradient(165deg, #3e2116 0%, #2a1a12 100%);
+    --sb-bg-flach: #3e2116;
+    --sb-bg-flach-2: #2a1a12;
+    --sb-text: #fbe9dc;
+    --sb-text-2: #e3c7b5;
+    --sb-aktiv-bg: #ff9a62;
+    --sb-aktiv-text: #1a1411;
+    --sb-hover: rgba(255, 255, 255, 0.08);
+
+    --verlauf-1: #e8603c;
+    --verlauf-2: #f2a23a;
+    --verlauf-text: #1a1411;
+    --verlauf-text-2: #2a1a12;
+
+    --saison-winter: #4b8db0;
+    --saison-winter-text: #9bd3f2;
+    --saison-fruehling: #5c9b50;
+    --saison-fruehling-text: #a6dd98;
+    --saison-sommer: #c98a1e;
+    --saison-sommer-text: #ffc870;
+    --saison-herbst: #b85f35;
+    --saison-herbst-text: #f5a783;
+
+    --wochenende: #33291f;
+    --ferien: #4a3613;
+    --ferien-rand: #ff6b5b;
+    --ferien-streifen: #c9952a;
+    --tipp: #2dd4e0;
+    --tipp-hell: #12404a;
+    --tipp-text: #cff7fb;
+    --tag-bg: #2a211b;
+    --tag-text: #f8ede4;
+    --tag-rand: #3a2e26;
     --rot: #ff8a80;
-    --rot-hell: #3a1d1d;
+    --rot-hell: #3d1f1c;
     --gelb: #ffd166;
-    --gelb-hell: #3a3116;
+    --gelb-hell: #3a3016;
     --gruen: #7bd88f;
     --gruen-hell: #173323;
     --orange: #ffb26b;
     --orange-hell: #3a2713;
+    --backdrop: rgba(0, 0, 0, 0.6);
   }
 }
 
@@ -104,9 +185,9 @@ h3 {
   margin: 0;
 }
 h1 {
-  font-size: 1.6rem;
-  font-weight: 700;
-  letter-spacing: -0.01em;
+  font-size: 2rem;
+  font-weight: 800;
+  letter-spacing: -0.015em;
 }
 h2 {
   font-size: 1.05rem;
@@ -126,7 +207,7 @@ textarea {
 }
 
 :focus-visible {
-  outline: 3px solid #f59e0b;
+  outline: 3px solid var(--fokus);
   outline-offset: 2px;
 }
 
@@ -147,7 +228,7 @@ textarea {
   left: -999px;
   top: 8px;
   background: var(--akzent);
-  color: #fff;
+  color: var(--akzent-auf);
   padding: 8px 12px;
   border-radius: 8px;
   z-index: 100;
@@ -180,8 +261,8 @@ textarea {
   position: sticky;
   top: 0;
   height: 100vh;
-  background: var(--akzent);
-  color: #fff;
+  background: var(--sb-bg);
+  color: var(--sb-text);
   display: flex;
   flex-direction: column;
   padding: 20px 12px;
@@ -204,9 +285,11 @@ textarea {
   place-items: center;
   width: 40px;
   height: 40px;
-  border-radius: 10px;
-  background: rgba(255, 255, 255, 0.14);
-  font-size: 20px;
+  border-radius: 14px;
+  background: var(--sb-aktiv-bg);
+  color: var(--sb-aktiv-text);
+  font-size: 22px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
 }
 
 .seitenleiste nav ul {
@@ -222,18 +305,20 @@ textarea {
   align-items: center;
   gap: 12px;
   padding: 10px 12px;
-  border-radius: 10px;
-  color: rgba(255, 255, 255, 0.85);
+  border-radius: 14px;
+  color: var(--sb-text-2);
   text-decoration: none;
-  font-weight: 500;
+  font-weight: 650;
+  transition: background 0.15s, color 0.15s;
 }
 .seitenleiste nav a:hover {
-  background: rgba(255, 255, 255, 0.08);
-  color: #fff;
+  background: var(--sb-hover);
+  color: var(--sb-text);
 }
 .seitenleiste nav a.aktiv {
-  background: #fff;
-  color: #1f3a5f;
+  background: var(--sb-aktiv-bg);
+  color: var(--sb-aktiv-text);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
 }
 .nav-kurz {
   display: none;
@@ -241,8 +326,9 @@ textarea {
 .seitenleiste-fuss {
   margin-top: auto;
   padding: 0 12px;
-  font-size: 0.8rem;
-  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.85rem;
+  font-weight: 650;
+  color: var(--sb-text-2);
 }
 
 .hauptbereich {
@@ -465,13 +551,16 @@ main:focus {
   gap: 6px;
   min-height: 40px;
   padding: 8px 16px;
-  border: 1px solid var(--rand);
-  border-radius: 10px;
+  border: 1px solid var(--rand-feld);
+  border-radius: 999px;
   background: var(--flaeche);
   color: var(--text);
-  font-weight: 550;
+  font-weight: 700;
   cursor: pointer;
   transition: background 0.15s, border-color 0.15s;
+}
+a.btn {
+  text-decoration: none;
 }
 .btn:hover {
   border-color: var(--akzent-text);
@@ -483,10 +572,11 @@ main:focus {
 .btn-primaer {
   background: var(--akzent);
   border-color: var(--akzent);
-  color: #fff;
+  color: var(--akzent-auf);
 }
 .btn-primaer:hover {
-  background: #2a4d7c;
+  background: var(--akzent-hover);
+  border-color: var(--akzent-hover);
 }
 .btn-gefahr {
   color: var(--rot);
@@ -765,7 +855,7 @@ textarea {
   width: 100%;
   min-height: 40px;
   padding: 7px 10px;
-  border: 1px solid var(--rand);
+  border: 1px solid var(--rand-feld);
   border-radius: var(--radius-klein);
   background: var(--flaeche);
 }
@@ -926,7 +1016,7 @@ textarea:hover {
 .varianten-gross button.aktiv {
   border-color: var(--akzent);
   background: var(--akzent);
-  color: #fff;
+  color: var(--akzent-auf);
 }
 .varianten-buchstabe {
   font-size: 1.35rem;
@@ -942,7 +1032,7 @@ textarea:hover {
   right: 16px;
   font-size: 0.8rem;
   font-weight: 700;
-  background: rgba(255, 255, 255, 0.18);
+  background: color-mix(in srgb, var(--akzent-auf) 18%, transparent);
   padding: 2px 10px;
   border-radius: 999px;
 }
@@ -966,7 +1056,7 @@ textarea:hover {
 }
 .varianten-klein button.aktiv {
   background: var(--akzent);
-  color: #fff;
+  color: var(--akzent-auf);
 }
 
 .tracker h2 {
@@ -1077,12 +1167,12 @@ textarea:hover {
 }
 
 .countdown {
-  background: linear-gradient(135deg, var(--akzent), #2d5689);
-  color: #fff;
+  background: linear-gradient(135deg, var(--verlauf-1), var(--verlauf-2));
+  color: var(--verlauf-text);
   border: 0;
 }
 .countdown .unterzeile {
-  color: rgba(255, 255, 255, 0.8);
+  color: var(--verlauf-text-2);
 }
 .countdown-zahl {
   font-size: 1.1rem;
@@ -1218,7 +1308,7 @@ textarea:hover {
   width: min(760px, calc(100vw - 24px));
 }
 .dialog::backdrop {
-  background: rgba(15, 23, 35, 0.5);
+  background: var(--backdrop);
 }
 .dialog-inhalt {
   padding: 20px;
@@ -1276,7 +1366,7 @@ textarea:hover {
 .tabs button.aktiv {
   background: var(--akzent);
   border-color: var(--akzent);
-  color: #fff;
+  color: var(--akzent-auf);
 }
 
 /* ==========================================================================
@@ -1460,10 +1550,11 @@ textarea:hover {
   outline: 2px solid var(--akzent-text);
   outline-offset: 1px;
 }
+/* Auswahl beim Anlegen: volle Akzentfarbe → Zahl gut lesbar (≥ 4,5:1) */
 .markiert {
-  background-image: linear-gradient(rgba(31, 58, 95, 0.35), rgba(31, 58, 95, 0.35));
-  box-shadow: inset 0 0 0 2px var(--akzent);
-  color: #fff;
+  background: var(--akzent) !important;
+  box-shadow: inset 0 0 0 2px var(--akzent-hover);
+  color: var(--akzent-auf) !important;
 }
 .monat-summe {
   display: flex;
@@ -1528,7 +1619,7 @@ textarea:hover {
   width: 40px;
   height: 24px;
   border-radius: 999px;
-  background: #9aa3b0;
+  background: var(--rand-feld);
   transition: background 0.15s;
   flex: none;
 }
@@ -1814,7 +1905,7 @@ textarea {
   height: 22px;
   border-radius: 50%;
   background: var(--akzent);
-  color: #fff;
+  color: var(--akzent-auf);
   font-weight: 800;
   font-style: italic;
   font-family: Georgia, serif;
@@ -2014,10 +2105,10 @@ textarea {
 .wochentage-wahl input:checked + span {
   background: var(--akzent);
   border-color: var(--akzent);
-  color: #fff;
+  color: var(--akzent-auf);
 }
 .wochentage-wahl input:focus-visible + span {
-  outline: 3px solid #f59e0b;
+  outline: 3px solid var(--fokus);
   outline-offset: 2px;
 }
 
@@ -2119,6 +2210,94 @@ textarea {
   flex-wrap: wrap;
   align-items: center;
   gap: 8px 14px;
+}
+
+/* ==========================================================================
+   Gestaltung „Sommer & Sonne“: weiche Formen, Wärme, Jahreszeiten
+   ========================================================================== */
+h2 {
+  font-weight: 750;
+}
+.karte,
+.monat,
+.legende {
+  border-radius: var(--radius);
+  box-shadow: var(--schatten);
+}
+.legende {
+  border-radius: 16px;
+}
+.logo {
+  font-weight: 700;
+}
+.plan-titel,
+.kopf-titel {
+  font-weight: 800;
+}
+.segmente,
+.varianten-klein,
+.segmente button,
+.varianten-klein button,
+.tabs button {
+  border-radius: 999px;
+}
+.varianten-gross button {
+  border-radius: var(--radius);
+}
+.tag {
+  border-radius: 10px;
+}
+.chance-eff {
+  background: var(--akzent-hell);
+  color: var(--akzent-text);
+}
+.hilfetext {
+  border-radius: 16px;
+}
+.balken-stapel {
+  height: 14px;
+  border-radius: 999px;
+}
+
+/* Personenfarbe als kräftige Oberkante */
+.tracker-p1,
+.tracker-p2,
+.person-karte {
+  border-top-width: 6px;
+}
+
+/* Kalender: jahreszeitliche Monatsfarben (Band oben + Überschrift) */
+.monat {
+  border-top: 6px solid var(--saison, var(--akzent));
+}
+.monat h3 {
+  color: var(--saison-text, var(--akzent-text));
+  font-weight: 800;
+  font-size: 1.1rem;
+}
+.monate .monat:nth-child(12),
+.monate .monat:nth-child(1),
+.monate .monat:nth-child(2) {
+  --saison: var(--saison-winter);
+  --saison-text: var(--saison-winter-text);
+}
+.monate .monat:nth-child(3),
+.monate .monat:nth-child(4),
+.monate .monat:nth-child(5) {
+  --saison: var(--saison-fruehling);
+  --saison-text: var(--saison-fruehling-text);
+}
+.monate .monat:nth-child(6),
+.monate .monat:nth-child(7),
+.monate .monat:nth-child(8) {
+  --saison: var(--saison-sommer);
+  --saison-text: var(--saison-sommer-text);
+}
+.monate .monat:nth-child(9),
+.monate .monat:nth-child(10),
+.monate .monat:nth-child(11) {
+  --saison: var(--saison-herbst);
+  --saison-text: var(--saison-herbst-text);
 }
 
 /* ==========================================================================

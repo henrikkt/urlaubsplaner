@@ -34,9 +34,9 @@ export interface Person {
 }
 
 export const STANDARD_FARBEN: Record<PersonId | 'gemeinsam', string> = {
-  p1: '#3B7DD8',
-  p2: '#D9468F',
-  gemeinsam: '#2E9E5B',
+  p1: '#197BB4',
+  p2: '#E21767',
+  gemeinsam: '#128563',
 };
 
 /** Block-Variante: "Immer", "Aus" oder die ID einer Variante des Plans */

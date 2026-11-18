@@ -11,11 +11,13 @@ import {
   entferneVariante,
   fuegePersonHinzu,
   fuegeVarianteHinzu,
+  hatEigeneFarben,
   istPaar,
   neueId,
   setzeOrtUndJahr,
   setzeRegionaleFeiertage,
   setzeVariantenAktiv,
+  standardFarbenUebernehmen,
 } from '../lib/plan';
 import { FERIEN_QUELLE, hatFerienDaten, schulferienFuer } from '../lib/schulferien';
 import { AUS, IMMER, type Plan } from '../lib/types';
@@ -229,6 +231,29 @@ function Personen({ plan, aendere }: { plan: Plan; aendere: Aendere }) {
               onChange={(e) => aendere((x) => ({ ...x, farbeGemeinsam: e.target.value }))}
             />
           </span>
+        </article>
+      )}
+      {hatEigeneFarben(plan) && (
+        <article className="karte" aria-labelledby="einst-standardfarben">
+          <h2 id="einst-standardfarben">Neue Standardfarben</h2>
+          <p className="unterzeile">
+            Die App hat frischere Standardfarben bekommen, die im Kalender besonders gut lesbar sind. Dein Plan nutzt noch
+            andere Farben – das ist völlig in Ordnung. Du kannst sie auf Wunsch übernehmen.
+          </p>
+          <button
+            type="button"
+            className="btn"
+            onClick={() => {
+              if (
+                window.confirm(
+                  `Die Farben für ${plan.personen.map((p) => p.name).join(', ')}${paar ? ' und für gemeinsamen Urlaub' : ''} auf die neuen Standardfarben setzen?`,
+                )
+              )
+                aendere(standardFarbenUebernehmen);
+            }}
+          >
+            Neue Standardfarben übernehmen
+          </button>
         </article>
       )}
     </>
