@@ -15,7 +15,7 @@ export function UpdateHinweis() {
 
   if (neu) {
     return (
-      <div className="hinweis hinweis-info banner" role="status">
+      <div className="hinweis hinweis-info sw-hinweis" role="status">
         <span>
           <strong>Neue Version verfügbar.</strong> Deine Daten bleiben erhalten.
         </span>
@@ -32,7 +32,7 @@ export function UpdateHinweis() {
   }
   if (offline) {
     return (
-      <div className="hinweis hinweis-ok banner" role="status">
+      <div className="hinweis hinweis-ok sw-hinweis" role="status">
         <span>Die App funktioniert jetzt auch ohne Internet.</span>
         <button type="button" className="icon-btn" aria-label="Hinweis schließen" onClick={() => setOffline(false)}>
           ✕

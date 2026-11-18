@@ -2456,6 +2456,19 @@ h2 {
   margin: 0 auto 8px;
 }
 
+/* Hinweise des Service Workers (offline bereit, neue Version): schwebend, verschieben nichts */
+.sw-hinweis {
+  position: fixed;
+  top: 12px;
+  left: 0;
+  right: 0;
+  z-index: 70;
+  width: min(560px, calc(100vw - 24px));
+  margin: 0 auto;
+  box-shadow: var(--schatten-gross);
+  animation: sanft-einblenden 0.3s ease both;
+}
+
 /* Erfolgsmeldung („Toast“) */
 .toast-bereich {
   position: fixed;
@@ -2578,6 +2591,7 @@ main > section {
 }
 
 @media print {
+  /* Druck immer hell – auch wenn das Gerät im Dunkelmodus ist */
   :root {
     --bg: #fff;
     --flaeche: #fff;
@@ -2585,13 +2599,31 @@ main > section {
     --text: #000;
     --text-2: #333;
     --rand: #ccc;
-    --akzent-text: #1f3a5f;
-    --wochenende: #e5e7eb;
-    --ferien: #fff1bf;
-    --ferien-streifen: #e9c34a;
+    --akzent: #c2410c;
+    --akzent-auf: #fff;
+    --akzent-text: #b03a0b;
+    --feiertag: #c62828;
+    --wochenende: #f3e7dc;
+    --ferien: #ffe3a3;
+    --ferien-rand: #b42318;
+    --ferien-streifen: #e0a526;
     --tag-bg: #fff;
     --tag-text: #000;
     --tag-rand: #ddd;
+    --saison-winter: #7cc4e8;
+    --saison-winter-text: #1d5f86;
+    --saison-fruehling: #8bd17c;
+    --saison-fruehling-text: #2e6b30;
+    --saison-sommer: #ffb547;
+    --saison-sommer-text: #a04a06;
+    --saison-herbst: #e8875a;
+    --saison-herbst-text: #9c3d17;
+    --schatten: none;
+    --schatten-gross: none;
+    color-scheme: light;
+  }
+  .monat {
+    border-top-width: 1.2mm;
   }
   * {
     -webkit-print-color-adjust: exact !important;

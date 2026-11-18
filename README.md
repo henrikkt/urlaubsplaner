@@ -19,6 +19,7 @@ Eine Web-App zur Urlaubsplanung für eine oder zwei Personen – mit Brückentag
 - **Export:** Backup als JSON, Kalenderdatei (.ics) für Outlook/Google/Handy, CSV für Excel, Druckansicht (A4 quer).
 - **Installierbar (PWA)** und offline nutzbar. Bei neuen Versionen erscheint „Neue Version verfügbar – jetzt aktualisieren“.
 - Bedienung auf Deutsch, für Handy optimiert, große Schrift und Klickflächen.
+- Freundliches Design „Sommer & Sonne“: warme Farben (auch im Dunkelmodus), Begrüßung mit Countdown bis zum nächsten Urlaub, Fortschrittsringe für die Urlaubstage, jahreszeitliche Monatsfarben und kleine Illustrationen.
 
 ## Wie die Daten geschützt sind
 
@@ -129,6 +130,8 @@ Das Skript `scripts/fetch-holidays.mjs` schreibt `src/data/schulferien.json` (wi
 - **24.12. und 31.12.** sind im Startassistenten als ganzer Urlaubstag vorbelegt (gesetzlich normale Arbeitstage) – lieber nicht zu knapp rechnen.
 - **CSV statt Excel-Datei:** keine zusätzliche Bibliothek, öffnet direkt in Excel. Inhalte, die Excel als Formel deuten würde, werden entschärft.
 - **zod ohne Code-Erzeugung** (`jitless`), damit die strikte Content-Security-Policy ohne `unsafe-eval` auskommt.
+- **Gestaltung „Sommer & Sonne“:** Alle Farben sind Design-Tokens in `src/styles.css` (hell und dunkel). `src/test/kontrast.test.ts` liest sie aus und prüft die wichtigen Kombinationen nach WCAG AA (Text ≥ 4,5:1, Rahmen/Flächen ≥ 3:1). Text auf Personenfarben wird automatisch weiß oder dunkel gewählt (≥ 4,5:1). Animationen sind dezent und bei „Bewegung reduzieren“ abgeschaltet.
+- **Schrift:** Nunito, selbst gehostet als variable woff2-Datei mit lateinischem Subset (`src/assets/fonts/`, SIL Open Font License, Lizenztext liegt bei). Sie wird vorgeladen und offline zwischengespeichert.
 - **`npm audit`:** Die Laufzeit-Abhängigkeiten sind ohne Befund. Gemeldete Funde betreffen nur Build-Werkzeuge (Glob-Matching); der Workflow bricht bei kritischen Funden ab.
 
 ## Projektstruktur
@@ -147,6 +150,8 @@ src/lib/                 reine, getestete Logik (keine Logik in Komponenten)
 src/speicher/            Speicher-Abstraktion: Browser (IndexedDB) und Server
 src/hooks/usePlan.ts     Laden/Speichern je Modus, Abgleich, Offline-Fallback
 src/components/          Oberfläche (Startassistent, Kalender, Übersicht …)
+  Illustrationen.tsx     selbst gezeichnete SVG-Illustrationen (Sonne, Koffer, Palme)
+src/assets/fonts/        Schrift Nunito (woff2) + Lizenz
 src/data/                Ferien- und Feiertagsdaten (aus fetch-holidays)
 src/test/testplan.ts     neutrale Testdaten
 server/                  Express-Server für den lokalen Modus

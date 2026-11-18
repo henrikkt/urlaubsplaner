@@ -20,6 +20,32 @@ export const CSP = [
   "form-action 'none'",
 ].join('; ');
 
+/** Lädt die selbst gehostete Schrift früh vor (Dateiname mit Hash steht erst nach dem Bundling fest). */
+function schriftVorladen(): Plugin {
+  let basis = '/';
+  return {
+    name: 'urlaubsplaner-schrift-vorladen',
+    apply: 'build',
+    configResolved(c) {
+      basis = c.base;
+    },
+    transformIndexHtml: {
+      order: 'post',
+      handler: (_html, ctx) => {
+        const datei = Object.keys(ctx.bundle ?? {}).find((n) => /nunito.*.woff2$/.test(n));
+        if (!datei) return [];
+        return [
+          {
+            tag: 'link',
+            attrs: { rel: 'preload', href: `${basis}${datei}`, as: 'font', type: 'font/woff2', crossorigin: '' },
+            injectTo: 'head',
+          },
+        ];
+      },
+    },
+  };
+}
+
 /** Fügt die CSP nur im Produktions-Build ein (im Dev-Modus braucht Vite Inline-Styles und -Skripte). */
 function cspPlugin(): Plugin {
   return {
@@ -52,6 +78,7 @@ export default defineConfig(({ mode }) => {
     plugins: [
       react(),
       cspPlugin(),
+      schriftVorladen(),
       VitePWA({
         // Im Server-Modus (lokal im WLAN) kein Service Worker – dort gleicht die App ständig mit dem Server ab
         disable: speicher === 'server',
