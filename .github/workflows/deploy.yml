@@ -1,0 +1,67 @@
+name: Deploy auf GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# Standard: nur Lesezugriff. Schreibrechte für Pages bekommt nur der Deploy-Job.
+permissions:
+  contents: read
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Code holen
+        uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - name: Node.js einrichten
+        uses: actions/setup-node@v7
+        with:
+          node-version: 26
+          cache: npm
+
+      - name: Abhängigkeiten installieren
+        run: npm ci
+
+      - name: Sicherheitsprüfung der Abhängigkeiten (bricht bei kritischen Funden ab)
+        run: npm audit --audit-level=critical
+
+      - name: Tests
+        run: npm test
+
+      - name: Pages konfigurieren
+        id: pages
+        uses: actions/configure-pages@v6
+
+      - name: Build (Browser-Modus)
+        run: npm run build:pages
+        env:
+          # z. B. "/urlaubsplaner/" – folgt automatisch dem Repository-Namen
+          BASE_PATH: ${{ steps.pages.outputs.base_path }}/
+
+      - name: Artefakt hochladen
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Auf GitHub Pages veröffentlichen
+        id: deployment
+        uses: actions/deploy-pages@v5

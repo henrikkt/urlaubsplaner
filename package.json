@@ -1,0 +1,48 @@
+{
+  "name": "urlaubsplaner",
+  "private": true,
+  "version": "2.0.0",
+  "description": "Urlaubsplaner mit Brückentag-Finder, Feiertagen und Schulferien für alle Bundesländer",
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "start": "vite build --mode server && tsx server/index.ts",
+    "serve": "tsx server/index.ts",
+    "dev": "concurrently -k -n server,web -c blue,magenta \"tsx watch server/index.ts\" \"vite --mode server\"",
+    "dev:browser": "vite",
+    "build": "tsc --noEmit -p tsconfig.json && vite build",
+    "build:pages": "tsc --noEmit -p tsconfig.json && vite build --mode pages",
+    "preview:pages": "vite preview --mode pages --port 4173 --strictPort",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:e2e": "playwright test",
+    "fetch-holidays": "node scripts/fetch-holidays.mjs"
+  },
+  "dependencies": {
+    "express": "^5.3.0",
+    "idb-keyval": "^6.3.0",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.65.1",
+    "@types/express": "^5.0.6",
+    "@types/node": "^26.6.6",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vite-pwa/assets-generator": "^2.0.0",
+    "@vitejs/plugin-react": "^6.3.0",
+    "concurrently": "^10.0.7",
+    "fake-indexeddb": "^6.2.8",
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.8",
+    "vite-plugin-pwa": "^2.0.0",
+    "vitest": "^5.1.0",
+    "workbox-window": "^7.4.1"
+  }
+}

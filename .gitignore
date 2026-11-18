@@ -1,0 +1,31 @@
+# Abhängigkeiten und Build
+node_modules/
+dist/
+dev-dist/
+coverage/
+
+# Persönliche Daten – niemals committen (nur im Projektwurzelverzeichnis;
+# src/data/ mit den Ferien-Daten wird dagegen committed)
+/data/
+/backup/
+*.local.*
+.env*
+
+# Caches und Testberichte
+.vite/
+.vitest/
+node_modules/.vite/
+node_modules/.vitest-cache/
+*.tsbuildinfo
+playwright-report/
+test-results/
+blob-report/
+playwright/.cache/
+e2e/screenshots/
+.lighthouse/
+
+# Sonstiges
+*.log
+*.tmp
+.DS_Store
+Thumbs.db

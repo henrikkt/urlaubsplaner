@@ -1,0 +1,2190 @@
+/* ==========================================================================
+   Urlaubsplaner – Design-Tokens
+   ========================================================================== */
+:root {
+  --akzent: #1f3a5f;
+  --akzent-text: #1f3a5f;
+  --akzent-hell: #e8eef6;
+  --bg: #f5f7fa;
+  --flaeche: #ffffff;
+  --flaeche-2: #f9fafb;
+  --text: #1b2430;
+  --text-2: #5a6472;
+  --rand: #e2e6ec;
+  --schatten: 0 1px 2px rgba(16, 24, 40, 0.05), 0 1px 3px rgba(16, 24, 40, 0.06);
+
+  /* Fachfarben (Personenfarben werden zur Laufzeit aus dem Plan gesetzt) */
+  --gemeinsam: #2e9e5b;
+  --gemeinsam-text: #fff;
+  --person-1: #3b7dd8;
+  --person-1-text: #fff;
+  --person-2: #d9468f;
+  --person-2-text: #fff;
+  --feiertag: #d93b3b;
+  --wochenende: #e5e7eb;
+  --ferien: #fff1bf;
+  --ferien-rand: #c0392b;
+  --ferien-streifen: #e9c34a;
+  --tipp: #0e7490;
+  --tipp-hell: #cff4fc;
+  --tipp-text: #0b4f63;
+  --tag-bg: #ffffff;
+  --tag-text: #1b2430;
+  --tag-rand: #eceff3;
+
+  --rot: #c62828;
+  --rot-hell: #fdecec;
+  --gelb: #8a6100;
+  --gelb-hell: #fff6d6;
+  --gruen: #237a3b;
+  --gruen-hell: #e5f5ea;
+  --orange: #c25a00;
+  --orange-hell: #fff0e1;
+
+  --radius: 12px;
+  --radius-klein: 8px;
+  --schrift: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  color-scheme: light dark;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --akzent-text: #9cc0ec;
+    --akzent-hell: #1d2a3b;
+    --bg: #0f141b;
+    --flaeche: #171e27;
+    --flaeche-2: #1c2430;
+    --text: #e7ebf0;
+    --text-2: #a0aab7;
+    --rand: #2b3542;
+    --schatten: 0 1px 2px rgba(0, 0, 0, 0.4);
+    --wochenende: #2c333d;
+    --ferien: #4a3f16;
+    --ferien-streifen: #b8952a;
+    --tipp: #22d3ee;
+    --tipp-hell: #123f4d;
+    --tipp-text: #cff4fc;
+    --tag-bg: #1c2430;
+    --tag-text: #e7ebf0;
+    --tag-rand: #26303c;
+    --rot: #ff8a80;
+    --rot-hell: #3a1d1d;
+    --gelb: #ffd166;
+    --gelb-hell: #3a3116;
+    --gruen: #7bd88f;
+    --gruen-hell: #173323;
+    --orange: #ffb26b;
+    --orange-hell: #3a2713;
+  }
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--schrift);
+  font-size: 17px;
+  line-height: 1.55;
+  color: var(--text);
+  background: var(--bg);
+}
+
+h1,
+h2,
+h3 {
+  line-height: 1.25;
+  margin: 0;
+}
+h1 {
+  font-size: 1.6rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+h2 {
+  font-size: 1.05rem;
+  font-weight: 650;
+  margin-bottom: 12px;
+}
+p {
+  margin: 0 0 8px;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+:focus-visible {
+  outline: 3px solid #f59e0b;
+  outline-offset: 2px;
+}
+
+.sr-only {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.skip-link {
+  position: absolute;
+  left: -999px;
+  top: 8px;
+  background: var(--akzent);
+  color: #fff;
+  padding: 8px 12px;
+  border-radius: 8px;
+  z-index: 100;
+}
+.skip-link:focus {
+  left: 8px;
+}
+
+.nur-drucken {
+  display: none;
+}
+
+.laden {
+  display: grid;
+  place-items: center;
+  min-height: 100vh;
+  color: var(--text-2);
+}
+
+/* ==========================================================================
+   Layout: Seitenleiste (Desktop) / Navigation unten (Handy)
+   ========================================================================== */
+.app {
+  display: grid;
+  grid-template-columns: 232px minmax(0, 1fr);
+  min-height: 100vh;
+}
+
+.seitenleiste {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  background: var(--akzent);
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  padding: 20px 12px;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 4px 10px 24px;
+  font-size: 0.95rem;
+  line-height: 1.2;
+}
+.logo strong {
+  display: block;
+  font-size: 1.3rem;
+}
+.logo-zeichen {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.14);
+  font-size: 20px;
+}
+
+.seitenleiste nav ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.seitenleiste nav a {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  color: rgba(255, 255, 255, 0.85);
+  text-decoration: none;
+  font-weight: 500;
+}
+.seitenleiste nav a:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+}
+.seitenleiste nav a.aktiv {
+  background: #fff;
+  color: #1f3a5f;
+}
+.nav-kurz {
+  display: none;
+}
+.seitenleiste-fuss {
+  margin-top: auto;
+  padding: 0 12px;
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.hauptbereich {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.kopfleiste {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 10px 28px;
+  background: color-mix(in srgb, var(--bg) 88%, transparent);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--rand);
+}
+.kopf-titel {
+  display: none;
+  font-weight: 700;
+  color: var(--akzent-text);
+}
+.kopf-variante {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.kopf-label {
+  font-size: 0.85rem;
+  color: var(--text-2);
+}
+.speicher-status {
+  margin-left: auto;
+  font-size: 0.85rem;
+  color: var(--text-2);
+  white-space: nowrap;
+}
+.speicher-status.status-gespeichert {
+  color: var(--gruen);
+}
+.speicher-status.status-offline {
+  color: var(--orange);
+  font-weight: 600;
+}
+
+main {
+  padding: 24px 28px 48px;
+  max-width: 1320px;
+  width: 100%;
+}
+main:focus {
+  outline: none;
+}
+
+.app-hinweis {
+  margin: 12px 28px 0;
+}
+
+@media (max-width: 899px) {
+  .app {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .seitenleiste {
+    position: fixed;
+    top: auto;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: auto;
+    z-index: 30;
+    padding: 4px 4px calc(4px + env(safe-area-inset-bottom));
+    flex-direction: row;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.15);
+  }
+  .logo,
+  .seitenleiste-fuss {
+    display: none;
+  }
+  .seitenleiste nav {
+    width: 100%;
+  }
+  .seitenleiste nav ul {
+    flex-direction: row;
+    justify-content: space-around;
+  }
+  .seitenleiste nav li {
+    flex: 1;
+  }
+  .seitenleiste nav a {
+    flex-direction: column;
+    gap: 2px;
+    padding: 6px 2px;
+    font-size: 0.68rem;
+    text-align: center;
+  }
+  .nav-lang {
+    display: none;
+  }
+  .nav-kurz {
+    display: inline;
+  }
+  .kopfleiste {
+    padding: 8px 16px;
+    gap: 10px;
+  }
+  .kopf-titel {
+    display: inline;
+    font-size: 0.95rem;
+  }
+  .kopf-label {
+    display: none;
+  }
+  main {
+    padding: 16px 16px 96px;
+  }
+  .app-hinweis {
+    margin: 12px 16px 0;
+  }
+  h1 {
+    font-size: 1.3rem;
+  }
+}
+
+@media (max-width: 420px) {
+  .speicher-status {
+    font-size: 0.75rem;
+  }
+  .kopf-titel {
+    display: none;
+  }
+}
+
+/* ==========================================================================
+   Bausteine
+   ========================================================================== */
+.seitenkopf {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px 24px;
+  margin-bottom: 20px;
+}
+.unterzeile {
+  color: var(--text-2);
+  font-size: 0.9rem;
+  margin: 4px 0 0;
+}
+.titel-zusatz {
+  color: var(--text-2);
+  font-weight: 500;
+}
+.aktionen {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+.spacer {
+  flex: 1;
+}
+.leer {
+  color: var(--text-2);
+  padding: 24px;
+  text-align: center;
+}
+
+.karte {
+  background: var(--flaeche);
+  border: 1px solid var(--rand);
+  border-radius: var(--radius);
+  padding: 20px;
+  box-shadow: var(--schatten);
+  min-width: 0;
+}
+.karten-kopf {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+.karten-kopf h2 {
+  margin: 0;
+}
+
+.raster-2,
+.raster-3 {
+  display: grid;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+.raster-2 {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr));
+}
+.raster-3 {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+}
+.stapel {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 40px;
+  padding: 8px 16px;
+  border: 1px solid var(--rand);
+  border-radius: 10px;
+  background: var(--flaeche);
+  color: var(--text);
+  font-weight: 550;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+.btn:hover {
+  border-color: var(--akzent-text);
+}
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.btn-primaer {
+  background: var(--akzent);
+  border-color: var(--akzent);
+  color: #fff;
+}
+.btn-primaer:hover {
+  background: #2a4d7c;
+}
+.btn-gefahr {
+  color: var(--rot);
+}
+.btn-gefahr:hover {
+  border-color: var(--rot);
+  background: var(--rot-hell);
+}
+.btn-klein {
+  min-height: 34px;
+  padding: 4px 12px;
+  font-size: 0.85rem;
+}
+.icon-btn {
+  display: inline-grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text-2);
+  cursor: pointer;
+  flex: none;
+}
+.icon-btn:hover {
+  background: var(--flaeche-2);
+  color: var(--text);
+}
+.link-btn {
+  border: 0;
+  background: none;
+  padding: 0;
+  font-weight: 650;
+  color: var(--akzent-text);
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 10px;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  white-space: nowrap;
+  border: 1px solid transparent;
+}
+.badge-ok {
+  background: var(--gruen-hell);
+  color: var(--gruen);
+}
+.badge-warn {
+  background: var(--orange-hell);
+  color: var(--orange);
+}
+.badge-aktiv {
+  background: var(--akzent-hell);
+  color: var(--akzent-text);
+}
+.badge-inaktiv {
+  background: var(--flaeche-2);
+  color: var(--text-2);
+  border-color: var(--rand);
+}
+.badge-bruecke {
+  background: var(--akzent-hell);
+  color: var(--akzent-text);
+}
+.badge-woche {
+  background: var(--flaeche-2);
+  color: var(--text-2);
+  border-color: var(--rand);
+}
+
+/* Status-Chips */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 34px;
+  padding: 4px 12px;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  user-select: none;
+}
+.chip:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+.chip-person {
+  font-weight: 450;
+  opacity: 0.8;
+}
+.status-idee {
+  background: #eceef1;
+  color: #374151;
+  border-color: #d5d9df;
+}
+.status-abgestimmt {
+  background: #dbeafe;
+  color: #1e40af;
+  border-color: #bcd4fb;
+}
+.status-beantragt {
+  background: #fef3c7;
+  color: #854d0e;
+  border-color: #f6dd87;
+}
+.status-genehmigt {
+  background: #d1fae5;
+  color: #065f46;
+  border-color: #a6e9c9;
+}
+.status-abgelehnt {
+  background: #fee2e2;
+  color: #991b1b;
+  border-color: #f8bcbc;
+}
+
+.punkt {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  vertical-align: baseline;
+  margin-right: 2px;
+}
+.punkt-p1 {
+  background: var(--person-1);
+}
+.punkt-p2 {
+  background: var(--person-2);
+}
+.punkt-alle {
+  background: var(--gemeinsam);
+}
+
+.hinweis {
+  border-radius: var(--radius-klein);
+  padding: 12px 16px;
+  margin-bottom: 16px;
+  border: 1px solid;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  align-items: center;
+  justify-content: space-between;
+}
+.hinweis ul {
+  margin: 4px 0 0;
+  padding-left: 20px;
+  width: 100%;
+}
+.hinweis-warn {
+  background: var(--orange-hell);
+  border-color: color-mix(in srgb, var(--orange) 40%, transparent);
+  color: var(--text);
+  display: block;
+}
+.hinweis-info {
+  background: var(--akzent-hell);
+  border-color: color-mix(in srgb, var(--akzent-text) 30%, transparent);
+}
+.hinweis-ok {
+  background: var(--gruen-hell);
+  border-color: color-mix(in srgb, var(--gruen) 40%, transparent);
+}
+.hinweis-fehler {
+  background: var(--rot-hell);
+  border-color: color-mix(in srgb, var(--rot) 40%, transparent);
+}
+
+.segmente {
+  display: inline-flex;
+  padding: 3px;
+  border-radius: 10px;
+  background: var(--flaeche-2);
+  border: 1px solid var(--rand);
+}
+.segmente button {
+  border: 0;
+  background: transparent;
+  padding: 6px 12px;
+  min-height: 34px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 550;
+  color: var(--text-2);
+  cursor: pointer;
+}
+.segmente button.aktiv {
+  background: var(--flaeche);
+  color: var(--akzent-text);
+  box-shadow: var(--schatten);
+}
+
+.schalter {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+.schalter input {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--akzent);
+}
+
+/* Formularfelder */
+.feld {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+.feld label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-2);
+}
+.feld-reihe {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 12px;
+}
+.feld-zeile {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+input[type='text'],
+input[type='number'],
+input[type='date'],
+select,
+textarea {
+  width: 100%;
+  min-height: 40px;
+  padding: 7px 10px;
+  border: 1px solid var(--rand);
+  border-radius: var(--radius-klein);
+  background: var(--flaeche);
+}
+textarea {
+  resize: vertical;
+}
+input:hover,
+select:hover,
+textarea:hover {
+  border-color: color-mix(in srgb, var(--akzent-text) 45%, var(--rand));
+}
+[aria-invalid='true'] {
+  border-color: var(--rot) !important;
+  background: var(--rot-hell);
+}
+.hilfe {
+  font-size: 0.78rem;
+  color: var(--text-2);
+}
+.fehler {
+  color: var(--rot);
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin: 2px 0 0;
+}
+
+/* Tabellen */
+.tabelle-scroll {
+  overflow-x: auto;
+  margin: 0 -4px;
+}
+.tabelle {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+.tabelle th,
+.tabelle td {
+  padding: 7px 8px;
+  text-align: left;
+  border-bottom: 1px solid var(--rand);
+  vertical-align: middle;
+}
+.tabelle thead th {
+  font-size: 0.78rem;
+  font-weight: 650;
+  color: var(--text-2);
+  vertical-align: bottom;
+}
+.tabelle tbody th {
+  font-weight: 550;
+}
+.tabelle tfoot th,
+.tabelle tfoot td {
+  font-weight: 700;
+  border-bottom: 0;
+}
+.tabelle .zahl {
+  text-align: right;
+}
+.th-hilfe {
+  display: block;
+  font-weight: 450;
+  font-size: 0.74rem;
+}
+.leer-zeile {
+  color: var(--text-2);
+}
+
+.mini-balken {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 80px;
+}
+.mini-balken-spur {
+  flex: 1 1 60px;
+  max-width: 90px;
+  height: 8px;
+  border-radius: 4px;
+  background: var(--flaeche-2);
+  overflow: hidden;
+}
+.mini-balken-fuellung {
+  display: block;
+  height: 100%;
+  border-radius: 4px;
+}
+.mini-balken-zahl {
+  min-width: 2ch;
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+}
+.farbe-p1 {
+  background: var(--person-1);
+}
+.farbe-p2 {
+  background: var(--person-2);
+}
+.farbe-alle {
+  background: var(--gemeinsam);
+}
+
+.vergleich-tabelle td {
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+}
+.vergleich-tabelle .spalte-aktiv {
+  background: var(--akzent-hell);
+}
+.vergleich-tabelle thead .badge {
+  margin-left: 6px;
+}
+
+/* ==========================================================================
+   Übersicht
+   ========================================================================== */
+.varianten-gross {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.varianten-gross button {
+  position: relative;
+  text-align: left;
+  padding: 18px 20px;
+  border-radius: var(--radius);
+  border: 2px solid var(--rand);
+  background: var(--flaeche);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  box-shadow: var(--schatten);
+}
+.varianten-gross button:hover {
+  border-color: color-mix(in srgb, var(--akzent-text) 50%, var(--rand));
+}
+.varianten-gross button.aktiv {
+  border-color: var(--akzent);
+  background: var(--akzent);
+  color: #fff;
+}
+.varianten-buchstabe {
+  font-size: 1.35rem;
+  font-weight: 750;
+}
+.varianten-text {
+  font-size: 0.92rem;
+  opacity: 0.9;
+}
+.varianten-haken {
+  position: absolute;
+  top: 14px;
+  right: 16px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  background: rgba(255, 255, 255, 0.18);
+  padding: 2px 10px;
+  border-radius: 999px;
+}
+
+.varianten-klein {
+  display: inline-flex;
+  padding: 3px;
+  border-radius: 10px;
+  background: var(--flaeche-2);
+  border: 1px solid var(--rand);
+}
+.varianten-klein button {
+  border: 0;
+  background: transparent;
+  min-width: 40px;
+  min-height: 34px;
+  border-radius: 8px;
+  font-weight: 700;
+  color: var(--text-2);
+  cursor: pointer;
+}
+.varianten-klein button.aktiv {
+  background: var(--akzent);
+  color: #fff;
+}
+
+.tracker h2 {
+  font-size: 1.2rem;
+}
+.tracker-p1 {
+  border-top: 4px solid var(--person-1);
+}
+.tracker-p2 {
+  border-top: 4px solid var(--person-2);
+}
+.tracker-zeilen {
+  margin: 0;
+}
+.tracker-zeilen > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 5px 0;
+  border-bottom: 1px dashed var(--rand);
+}
+.tracker-zeilen dt {
+  color: var(--text-2);
+}
+.tracker-zeilen dd {
+  margin: 0;
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+.tracker-zeilen .summe {
+  border-bottom: 1px solid var(--text-2);
+}
+.tracker-zeilen .gross dd {
+  font-size: 1.3rem;
+}
+.tracker-zeilen .gross dt {
+  align-self: center;
+  color: var(--text);
+  font-weight: 600;
+}
+.tracker-unten {
+  margin-top: 12px;
+}
+.tracker-unten > div:last-child {
+  border-bottom: 0;
+}
+.wert-text {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+.wert-rot dd,
+.wert-rot {
+  color: var(--rot);
+}
+.wert-gelb dd {
+  color: var(--gelb);
+}
+.wert-gruen dd {
+  color: var(--gruen);
+}
+.wert-orange dd,
+.wert-orange dt {
+  color: var(--orange);
+}
+
+.balken-stapel {
+  display: flex;
+  height: 12px;
+  margin: 14px 0 8px;
+  border-radius: 6px;
+  overflow: hidden;
+  background: var(--flaeche-2);
+  border: 1px solid var(--rand);
+}
+.seg {
+  height: 100%;
+}
+.seg-genehmigt {
+  background: var(--gemeinsam);
+}
+.seg-beantragt {
+  background: #e8b10e;
+}
+.seg-offen {
+  background: #9aa3b0;
+}
+.seg-abgelehnt {
+  background: var(--feiertag);
+}
+.status-legende {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 14px;
+  font-size: 0.82rem;
+  color: var(--text-2);
+}
+.quadrat {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  margin-right: 3px;
+}
+
+.countdown {
+  background: linear-gradient(135deg, var(--akzent), #2d5689);
+  color: #fff;
+  border: 0;
+}
+.countdown .unterzeile {
+  color: rgba(255, 255, 255, 0.8);
+}
+.countdown-zahl {
+  font-size: 1.1rem;
+  margin: 0;
+}
+.countdown-zahl strong {
+  font-size: 2.4rem;
+  line-height: 1.1;
+}
+.countdown-name {
+  font-weight: 650;
+  margin: 6px 0 0;
+}
+.gross-zahl {
+  font-size: 2.4rem;
+  font-weight: 750;
+  line-height: 1.1;
+  margin: 0;
+  color: var(--gemeinsam);
+}
+
+/* ==========================================================================
+   Urlaubsblöcke
+   ========================================================================== */
+.block-liste,
+.chancen-liste,
+.liste-editor {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.block-liste {
+  display: grid;
+  gap: 14px;
+}
+.block-karte {
+  border-left: 4px solid var(--akzent);
+}
+.block-karte.inaktiv {
+  border-left-color: var(--rand);
+  background: var(--flaeche-2);
+}
+.block-karte.inaktiv .block-editor {
+  opacity: 0.62;
+}
+.block-karte.inaktiv .block-editor:focus-within {
+  opacity: 1;
+}
+.block-karte-kopf {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  margin-bottom: 12px;
+}
+.zeitraum {
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+.block-editor {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.feld-name input {
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+.editor-oben {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+.editor-oben .feld-name {
+  grid-column: 1 / -1;
+}
+@media (min-width: 1200px) {
+  .editor-oben {
+    grid-template-columns: minmax(0, 2.2fr) repeat(4, minmax(0, 1fr));
+  }
+  .editor-oben .feld-name {
+    grid-column: auto;
+  }
+}
+.editor-mitte {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.dialog .editor-oben {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.dialog .editor-oben .feld-name {
+  grid-column: 1 / -1;
+}
+.kennzahlen {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0;
+}
+.kennzahlen > div {
+  background: var(--flaeche-2);
+  border: 1px solid var(--rand);
+  border-radius: var(--radius-klein);
+  padding: 6px 12px;
+  min-width: 82px;
+}
+.kennzahlen dt {
+  font-size: 0.72rem;
+  color: var(--text-2);
+  font-weight: 600;
+}
+.kennzahlen dd {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+.kennzahlen .kennzahl-ferien {
+  display: flex;
+  align-items: center;
+  background: none;
+  border: 0;
+  padding: 0;
+}
+.status-reihe {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* ==========================================================================
+   Dialog
+   ========================================================================== */
+.dialog {
+  border: 0;
+  padding: 0;
+  border-radius: 16px;
+  width: min(560px, calc(100vw - 24px));
+  max-height: calc(100vh - 24px);
+  background: var(--flaeche);
+  color: var(--text);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+}
+.dialog-breit {
+  width: min(760px, calc(100vw - 24px));
+}
+.dialog::backdrop {
+  background: rgba(15, 23, 35, 0.5);
+}
+.dialog-inhalt {
+  padding: 20px;
+}
+.dialog-kopf {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+.dialog-kopf h2 {
+  margin: 0;
+}
+.dialog-fuss {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: flex-end;
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--rand);
+}
+.formular {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.zeitraum-gross {
+  font-weight: 650;
+  font-size: 1.05rem;
+  color: var(--akzent-text);
+  margin: 0;
+}
+.vorschau {
+  font-size: 0.9rem;
+  color: var(--text-2);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+}
+.tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+.tabs button {
+  border: 1px solid var(--rand);
+  background: var(--flaeche-2);
+  border-radius: 999px;
+  padding: 4px 12px;
+  cursor: pointer;
+}
+.tabs button.aktiv {
+  background: var(--akzent);
+  border-color: var(--akzent);
+  color: #fff;
+}
+
+/* ==========================================================================
+   Kalender
+   ========================================================================== */
+.legende {
+  list-style: none;
+  padding: 12px 16px;
+  margin: 0 0 16px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 18px;
+  font-size: 0.85rem;
+  background: var(--flaeche);
+  border: 1px solid var(--rand);
+  border-radius: var(--radius);
+}
+.legende li {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.legende-feld {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+  border: 1px solid var(--tag-rand);
+}
+.legende-besonders {
+  font-weight: 800;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.auswahl-banner {
+  position: sticky;
+  top: 64px;
+  z-index: 10;
+}
+
+.monate {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 268px), 1fr));
+  gap: 16px;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.monate.zieht {
+  cursor: crosshair;
+}
+.monat {
+  background: var(--flaeche);
+  border: 1px solid var(--rand);
+  border-radius: var(--radius);
+  padding: 14px;
+  box-shadow: var(--schatten);
+}
+.monat h3 {
+  font-size: 1rem;
+  margin-bottom: 8px;
+  color: var(--akzent-text);
+}
+.monat-raster {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 3px;
+}
+.wt {
+  text-align: center;
+  font-size: 0.72rem;
+  font-weight: 650;
+  color: var(--text-2);
+  padding-bottom: 2px;
+}
+.wt-we {
+  opacity: 0.7;
+}
+.tag,
+.tag-leer {
+  aspect-ratio: 1 / 1;
+  min-height: 32px;
+}
+.tag {
+  position: relative;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 1px solid var(--tag-rand);
+  border-radius: 7px;
+  background: var(--tag-bg);
+  color: var(--tag-text);
+  font-size: 0.85rem;
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+.tag:hover {
+  border-color: var(--akzent-text);
+}
+.tag:focus-visible {
+  z-index: 2;
+}
+.wochenende,
+.legende-feld.wochenende {
+  background: var(--wochenende);
+  border-color: transparent;
+}
+.ferien,
+.legende-feld.ferien {
+  background: var(--ferien);
+  border-color: transparent;
+}
+.feiertag,
+.legende-feld.feiertag {
+  background: var(--feiertag);
+  border-color: transparent;
+  color: #fff;
+  font-weight: 700;
+}
+.urlaub {
+  color: #fff;
+  font-weight: 800;
+  border-color: transparent;
+}
+.urlaub-alle {
+  background: var(--gemeinsam);
+}
+.urlaub-p1 {
+  background: var(--person-1);
+}
+.urlaub-p2 {
+  background: var(--person-2);
+}
+.urlaub-in-ferien {
+  box-shadow:
+    inset 0 0 0 2px var(--ferien-rand),
+    inset 0 0 0 3.5px rgba(255, 255, 255, 0.85);
+  border-color: var(--ferien-rand);
+}
+.ferien-streifen {
+  background-image: linear-gradient(to top, var(--ferien-streifen) 0 3px, transparent 3px);
+}
+/* Urlaubstipps (Variante D): gestrichelter Rahmen, Urlaubstage des Tipps zusätzlich getönt */
+.tipp,
+.legende-feld.tipp {
+  border: 2px dashed var(--tipp);
+}
+.tipp-ut,
+.legende-feld.tipp-ut {
+  background: var(--tipp-hell);
+  color: var(--tipp-text);
+  font-weight: 700;
+}
+.mit-feiertag::after {
+  content: '';
+  position: absolute;
+  top: 3px;
+  right: 3px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--feiertag);
+  box-shadow: 0 0 0 1.5px #fff;
+}
+.besonders .tag-zahl {
+  font-weight: 800;
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 2px;
+}
+.tag-symbol {
+  position: absolute;
+  top: 0;
+  left: 1px;
+  font-size: 10px;
+  line-height: 1;
+}
+.heute {
+  outline: 2px solid var(--akzent-text);
+  outline-offset: 1px;
+}
+.markiert {
+  background-image: linear-gradient(rgba(31, 58, 95, 0.35), rgba(31, 58, 95, 0.35));
+  box-shadow: inset 0 0 0 2px var(--akzent);
+  color: #fff;
+}
+.monat-summe {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  margin: 10px 0 0;
+  font-size: 0.8rem;
+  color: var(--text-2);
+}
+.monat-summe strong {
+  color: var(--text);
+}
+
+@media (max-width: 599px) {
+  .kennzahlen {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    width: 100%;
+  }
+  .kennzahlen > div {
+    min-width: 0;
+    padding: 5px 8px;
+  }
+  .kennzahlen .kennzahl-ferien {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 899px) {
+  .auswahl-banner {
+    top: 56px;
+  }
+  .tag {
+    font-size: 0.95rem;
+    min-height: 40px;
+  }
+}
+
+/* Schalter "Eigene Planung" */
+.schalter-gross {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 40px;
+  padding: 6px 14px 6px 8px;
+  border: 1px solid var(--rand);
+  border-radius: 999px;
+  background: var(--flaeche);
+  font-weight: 600;
+  cursor: pointer;
+}
+.schalter-gross:hover {
+  border-color: var(--tipp);
+}
+.schalter-gross.an {
+  border-color: var(--tipp);
+  background: var(--tipp-hell);
+  color: var(--tipp-text);
+}
+.switch-spur {
+  position: relative;
+  width: 40px;
+  height: 24px;
+  border-radius: 999px;
+  background: #9aa3b0;
+  transition: background 0.15s;
+  flex: none;
+}
+.switch-knopf {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  transition: transform 0.15s;
+}
+.schalter-gross.an .switch-spur {
+  background: var(--tipp);
+}
+.schalter-gross.an .switch-knopf {
+  transform: translateX(16px);
+}
+
+/* Tipp-Liste */
+.tipp-panel {
+  margin-bottom: 16px;
+  padding: 14px 18px;
+  border-left: 4px solid var(--tipp);
+}
+.tipp-panel summary {
+  cursor: pointer;
+  padding: 2px 0;
+}
+.tipp-filter {
+  margin: 10px 0 6px;
+}
+.tipp-liste {
+  list-style: none;
+  margin: 8px 0 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr));
+  gap: 10px;
+}
+.dialog .tipp-liste {
+  grid-template-columns: 1fr;
+}
+.tipp-eintrag {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 10px 12px;
+  border: 1px dashed var(--tipp);
+  border-radius: var(--radius-klein);
+  background: var(--flaeche-2);
+}
+.tipp-formel {
+  margin: 0;
+}
+.tipp-anlass {
+  margin: 2px 0 0;
+  font-weight: 600;
+}
+.tipp-aktionen {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+/* ==========================================================================
+   Brückentage
+   ========================================================================== */
+.chancen-liste {
+  display: grid;
+  gap: 12px;
+}
+.chance {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 12px 24px;
+  align-items: center;
+}
+.chance-verplant {
+  border-left: 4px solid var(--gemeinsam);
+}
+.chance-formel {
+  font-size: 1.15rem;
+  margin: 0 0 4px;
+}
+.chance-eff {
+  margin-left: 10px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--akzent-text);
+  background: var(--akzent-hell);
+  padding: 2px 8px;
+  border-radius: 999px;
+}
+.chance-anlass {
+  font-weight: 600;
+  margin: 0;
+}
+.chance-seite {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+/* ==========================================================================
+   Einstellungen
+   ========================================================================== */
+.liste-editor {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.liste-zeile {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+.liste-zeile input[type='date'] {
+  width: 160px;
+  flex: none;
+}
+.liste-zeile input[type='text'] {
+  flex: 1 1 200px;
+  width: auto;
+}
+.liste-zeile .fehler {
+  width: 100%;
+}
+.wochentag-hilfe {
+  width: 22px;
+  color: var(--text-2);
+  font-size: 0.85rem;
+}
+.symbol-wahl {
+  width: 64px !important;
+  flex: none;
+}
+section > .karte {
+  margin-bottom: 16px;
+}
+.karte-gefahr {
+  border-color: color-mix(in srgb, var(--rot) 35%, var(--rand));
+}
+
+/* ==========================================================================
+   Personenfarben: Text auf farbigem Grund automatisch hell/dunkel
+   ========================================================================== */
+.urlaub-p1 {
+  color: var(--person-1-text);
+}
+.urlaub-p2 {
+  color: var(--person-2-text);
+}
+.urlaub-alle {
+  color: var(--gemeinsam-text);
+}
+
+/* ==========================================================================
+   Lesbarkeit: größere Schrift und Klickflächen (auch für ältere Nutzer)
+   ========================================================================== */
+.btn {
+  min-height: 46px;
+  padding: 10px 18px;
+}
+.btn-klein {
+  min-height: 42px;
+  padding: 6px 14px;
+  font-size: 0.92rem;
+}
+.icon-btn {
+  width: 44px;
+  height: 44px;
+}
+input[type='text'],
+input[type='number'],
+input[type='date'],
+select,
+textarea {
+  min-height: 46px;
+  padding: 9px 12px;
+}
+.feld label,
+.feld-titel {
+  font-size: 0.92rem;
+  color: var(--text);
+}
+.hilfe,
+.th-hilfe,
+.kennzahlen dt,
+.wt,
+.badge {
+  font-size: 0.82rem;
+}
+.unterzeile {
+  font-size: 0.95rem;
+}
+.tabelle,
+.tabelle thead th {
+  font-size: 0.95rem;
+}
+.chip,
+.segmente button,
+.varianten-klein button {
+  min-height: 42px;
+  font-size: 0.92rem;
+}
+.schalter {
+  font-size: 1rem;
+  min-height: 44px;
+}
+.schalter input {
+  width: 22px;
+  height: 22px;
+}
+.tag-symbol {
+  font-size: 11px;
+}
+.monat-summe {
+  font-size: 0.88rem;
+}
+.legende {
+  font-size: 0.92rem;
+}
+.speicher-status {
+  font-size: 0.92rem;
+}
+.speicher-status.status-fehler {
+  color: var(--rot);
+  font-weight: 600;
+}
+@media (max-width: 899px) {
+  .seitenleiste nav a {
+    font-size: 0.78rem;
+    padding: 8px 2px;
+    min-height: 56px;
+  }
+  .seitenleiste nav a .icon {
+    width: 24px;
+    height: 24px;
+  }
+}
+/* Desktop-Navigation zeigt alles direkt, "Mehr" nur auf dem Handy */
+.nav-nur-handy {
+  display: none;
+}
+@media (max-width: 899px) {
+  .nav-nur-desktop {
+    display: none;
+  }
+  .nav-nur-handy {
+    display: list-item;
+  }
+}
+
+/* Kurze Hilfetexte */
+.hilfetext {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  background: var(--akzent-hell);
+  border-radius: var(--radius-klein);
+  padding: 10px 14px;
+  margin: 0 0 16px;
+  font-size: 0.95rem;
+}
+.hilfetext::before {
+  content: 'i';
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--akzent);
+  color: #fff;
+  font-weight: 800;
+  font-style: italic;
+  font-family: Georgia, serif;
+  font-size: 0.85rem;
+  margin-top: 1px;
+}
+
+/* ==========================================================================
+   Plan-Umschalter (Kopfleiste)
+   ========================================================================== */
+.plan-wahl {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+.plan-wahl select {
+  min-height: 42px;
+  max-width: 240px;
+  font-weight: 650;
+  color: var(--akzent-text);
+}
+.plan-titel {
+  font-weight: 700;
+  color: var(--akzent-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
+@media (max-width: 599px) {
+  .kopfleiste {
+    flex-wrap: wrap;
+  }
+  .plan-wahl select {
+    max-width: 52vw;
+  }
+}
+
+/* ==========================================================================
+   Banner (Backup-Erinnerung, neue Version)
+   ========================================================================== */
+.banner {
+  margin: 12px 28px 0;
+}
+@media (max-width: 899px) {
+  .banner {
+    margin: 12px 16px 0;
+  }
+}
+
+/* ==========================================================================
+   Startassistent
+   ========================================================================== */
+.assistent {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 24px 16px 96px;
+}
+.assistent-kopf {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 8px;
+}
+.assistent-logo {
+  width: 56px;
+  height: 56px;
+  flex: none;
+}
+.schritte {
+  list-style: none;
+  display: flex;
+  gap: 6px;
+  padding: 0;
+  margin: 16px 0 20px;
+}
+.schritte li {
+  flex: 1;
+  height: 6px;
+  border-radius: 3px;
+  background: var(--rand);
+}
+.schritte li.erledigt {
+  background: var(--akzent-text);
+}
+.assistent .karte {
+  margin-bottom: 16px;
+}
+.assistent-fuss {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 8px;
+}
+.wahl-karten {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr));
+  gap: 12px;
+}
+.wahl-karte {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  text-align: left;
+  padding: 16px 18px;
+  min-height: 72px;
+  border: 2px solid var(--rand);
+  border-radius: var(--radius);
+  background: var(--flaeche);
+  cursor: pointer;
+  font-size: 1.05rem;
+  font-weight: 650;
+}
+.wahl-karte small {
+  font-weight: 450;
+  color: var(--text-2);
+  font-size: 0.9rem;
+}
+.wahl-karte[aria-checked='true'] {
+  border-color: var(--akzent);
+  background: var(--akzent-hell);
+}
+.vorschlag-liste {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 10px;
+}
+.vorschlag {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  padding: 12px 14px;
+  border: 1px solid var(--rand);
+  border-radius: var(--radius-klein);
+  background: var(--flaeche);
+  cursor: pointer;
+}
+.vorschlag input {
+  width: 24px;
+  height: 24px;
+  flex: none;
+  margin-top: 2px;
+  accent-color: var(--akzent);
+}
+.vorschlag:has(input:checked) {
+  border-color: var(--akzent);
+  background: var(--akzent-hell);
+}
+
+/* Wochentage wählen */
+.wochentage-wahl {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.wochentage-wahl label {
+  position: relative;
+}
+.wochentage-wahl input {
+  position: absolute;
+  opacity: 0;
+  inset: 0;
+  cursor: pointer;
+}
+.wochentage-wahl span {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 46px;
+  border: 2px solid var(--rand);
+  border-radius: var(--radius-klein);
+  font-weight: 700;
+  background: var(--flaeche);
+}
+.wochentage-wahl input:checked + span {
+  background: var(--akzent);
+  border-color: var(--akzent);
+  color: #fff;
+}
+.wochentage-wahl input:focus-visible + span {
+  outline: 3px solid #f59e0b;
+  outline-offset: 2px;
+}
+
+/* Farbwahl */
+.farbe-feld {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.farbe-feld input[type='color'] {
+  width: 56px;
+  height: 46px;
+  padding: 3px;
+  border: 1px solid var(--rand);
+  border-radius: var(--radius-klein);
+  background: var(--flaeche);
+  cursor: pointer;
+}
+
+.feldgruppe {
+  border: 0;
+  padding: 0;
+  margin: 0;
+  min-width: 0;
+}
+.feldgruppe-abstand {
+  margin-top: 8px;
+}
+.feldgruppe legend {
+  padding: 0;
+  margin-bottom: 4px;
+  font-weight: 600;
+}
+.checkbox-liste {
+  list-style: none;
+  padding: 0;
+  margin: 8px 0 0;
+  display: grid;
+  gap: 6px;
+}
+.checkbox-liste .hilfe {
+  display: block;
+  margin-left: 30px;
+}
+
+.person-karte {
+  border-top: 4px solid var(--person-1);
+}
+.person-karte.person-p2 {
+  border-top-color: var(--person-2);
+}
+
+/* ==========================================================================
+   "Mehr"-Seite, Datenschutz, Hilfe
+   ========================================================================== */
+.mehr-liste {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 10px;
+}
+.mehr-liste a {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 18px;
+  min-height: 64px;
+  border: 1px solid var(--rand);
+  border-radius: var(--radius);
+  background: var(--flaeche);
+  color: var(--text);
+  text-decoration: none;
+  font-weight: 650;
+  font-size: 1.05rem;
+}
+.mehr-liste a small {
+  display: block;
+  font-weight: 450;
+  font-size: 0.9rem;
+  color: var(--text-2);
+}
+.text-seite {
+  max-width: 760px;
+}
+.text-seite h2 {
+  margin-top: 4px;
+}
+.text-seite ul,
+.text-seite ol {
+  padding-left: 22px;
+  margin: 6px 0 10px;
+}
+.text-seite li {
+  margin-bottom: 6px;
+}
+.status-zeile {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 14px;
+}
+
+/* ==========================================================================
+   Druck: Jahreskalender auf einer A4-Seite quer
+   ========================================================================== */
+@page {
+  size: A4 landscape;
+  margin: 8mm;
+}
+
+@media print {
+  :root {
+    --bg: #fff;
+    --flaeche: #fff;
+    --flaeche-2: #fff;
+    --text: #000;
+    --text-2: #333;
+    --rand: #ccc;
+    --akzent-text: #1f3a5f;
+    --wochenende: #e5e7eb;
+    --ferien: #fff1bf;
+    --ferien-streifen: #e9c34a;
+    --tag-bg: #fff;
+    --tag-text: #000;
+    --tag-rand: #ddd;
+  }
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    box-shadow: none;
+  }
+  body {
+    background: #fff;
+    font-size: 8pt;
+  }
+  .nicht-drucken,
+  .seitenleiste,
+  .kopfleiste,
+  .skip-link,
+  dialog {
+    display: none !important;
+  }
+  .nur-drucken {
+    display: block;
+  }
+  .app {
+    display: block;
+  }
+  main {
+    padding: 0;
+    max-width: none;
+  }
+  .seitenkopf {
+    margin-bottom: 2mm;
+  }
+  h1 {
+    font-size: 13pt;
+  }
+  .unterzeile {
+    font-size: 7pt;
+    margin: 0;
+  }
+  .legende {
+    padding: 1.5mm 2mm;
+    margin-bottom: 2mm;
+    font-size: 7pt;
+    gap: 1mm 4mm;
+    border-radius: 2mm;
+  }
+  .legende-feld {
+    width: 3mm;
+    height: 3mm;
+  }
+  .monate {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2.5mm;
+  }
+  .monat {
+    padding: 1.5mm 2mm;
+    border-radius: 2mm;
+    break-inside: avoid;
+  }
+  .monat h3 {
+    font-size: 8.5pt;
+    margin-bottom: 0.8mm;
+  }
+  .monat-raster {
+    gap: 0.5mm;
+  }
+  .wt {
+    font-size: 6pt;
+    padding: 0;
+  }
+  .tag,
+  .tag-leer {
+    aspect-ratio: auto;
+    min-height: 0;
+    height: 5mm;
+  }
+  .tag {
+    font-size: 6.5pt;
+    border-radius: 1mm;
+    border-width: 0.2mm;
+  }
+  .tag-symbol {
+    font-size: 4.5pt;
+  }
+  .mit-feiertag::after {
+    width: 1.4mm;
+    height: 1.4mm;
+    top: 0.4mm;
+    right: 0.4mm;
+  }
+  .urlaub-in-ferien {
+    box-shadow: inset 0 0 0 0.5mm var(--ferien-rand) !important;
+  }
+  .heute {
+    outline: none;
+  }
+  .monat-summe {
+    font-size: 6pt;
+    margin-top: 0.8mm;
+  }
+  .punkt {
+    width: 1.8mm;
+    height: 1.8mm;
+  }
+}
