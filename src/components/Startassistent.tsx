@@ -4,10 +4,10 @@ import { leseImport } from '../speicher/arbeitsbereich';
 import { findeBrueckentage, type Chance } from '../lib/brueckentage';
 import { formatDatumKurz, formatZeitraum } from '../lib/datum';
 import { bundeslandName, type Bundesland } from '../lib/feiertage';
-import { formatEffizienz, formatZahl, tageText } from '../lib/format';
+import { formatZahl, tageText } from '../lib/format';
 import { neuerBlock, neuerPlan, standardRegionaleFeiertage, type PersonEingabe } from '../lib/plan';
 import { IMMER, STANDARD_FARBEN, type BesondererTag, type Plan } from '../lib/types';
-import { utText } from './Brueckentage';
+import { EffizienzAbzeichen, utText } from './Brueckentage';
 import { BundeslandWahl, jahresOptionen, PersonFelder, RegionaleFeiertageWahl } from './Formular';
 import { FerienBadge, Hilfe } from './ui';
 
@@ -376,7 +376,7 @@ export function Startassistent({
                       <strong>
                         {utText(c, vorschau)} → {tageText(c.tageFrei)} frei
                       </strong>{' '}
-                      <span className="chance-eff">{formatEffizienz(c.effizienz)}</span>
+                      <EffizienzAbzeichen effizienz={c.effizienz} />
                       <br />
                       {c.anlass} · {formatZeitraum(c.von, c.bis)}
                       <br />

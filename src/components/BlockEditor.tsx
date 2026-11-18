@@ -1,7 +1,7 @@
 import { useId } from 'react';
 import { kennzahlenBlock, personStatus, type Kontext } from '../lib/berechnung';
 import { formatDatumLang } from '../lib/datum';
-import { formatEffizienz, formatZahl } from '../lib/format';
+import { effizienzKurz, formatZahl } from '../lib/format';
 import {
   blockVarianteText,
   blockVariantenOptionen,
@@ -20,7 +20,7 @@ export function Kennzahlen({ block, ctx, plan }: { block: Urlaubsblock; ctx: Kon
   return (
     <dl className="kennzahlen">
       <div>
-        <dt>Tage frei</dt>
+        <dt>Freie Tage</dt>
         <dd>{formatZahl(k.tageFrei)}</dd>
       </div>
       {plan.personen.map((p) => (
@@ -30,8 +30,8 @@ export function Kennzahlen({ block, ctx, plan }: { block: Urlaubsblock; ctx: Kon
         </div>
       ))}
       <div>
-        <dt>Effizienz</dt>
-        <dd>{formatEffizienz(k.effizienz)}</dd>
+        <dt>Pro Urlaubstag</dt>
+        <dd>{effizienzKurz(k.effizienz)}</dd>
       </div>
       <div className="kennzahl-ferien">
         <dt className="sr-only">Schulferien</dt>

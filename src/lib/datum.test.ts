@@ -58,6 +58,15 @@ describe('Effizienz in Alltagssprache', () => {
     expect(effizienzText(12 / 7)).toBe('1 Urlaubstag ≈ 1,7 freie Tage');
     expect(effizienzText(1)).toBe('1 Urlaubstag = 1 freier Tag');
     expect(effizienzText(null)).toBe('ohne Urlaubstag');
-    expect(effizienzKurz(16 / 9)).toBe('1,8 freie Tage je Urlaubstag');
+    expect(effizienzKurz(16 / 9)).toBe('1,8 freie Tage');
+    expect(effizienzKurz(1)).toBe('1 freier Tag');
+  });
+  it('Einordnung als Abzeichen', async () => {
+    const { effizienzBewertung } = await import('./format');
+    expect(effizienzBewertung(4)).toBe('Top-Tipp');
+    expect(effizienzBewertung(3)).toBe('Top-Tipp');
+    expect(effizienzBewertung(2.5)).toBe('Sehr gut');
+    expect(effizienzBewertung(1.8)).toBeNull();
+    expect(effizienzBewertung(null)).toBeNull();
   });
 });

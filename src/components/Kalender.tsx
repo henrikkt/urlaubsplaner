@@ -35,11 +35,11 @@ import {
   WOCHENTAGE_KURZ,
   wochentag,
 } from '../lib/datum';
-import { formatEffizienz, formatZahl, tageText } from '../lib/format';
+import { formatZahl, tageText } from '../lib/format';
 import { aktiveVarianteVon, istPaar, personName, werText, zeigeVarianten } from '../lib/plan';
 import { tippsProTag, urlaubstipps } from '../lib/tipps';
 import type { BesondererTag, PersonId, Plan, Urlaubsblock } from '../lib/types';
-import { utText, vorlageAus } from './Brueckentage';
+import { EffizienzAbzeichen, utText, vorlageAus } from './Brueckentage';
 import type { NeuVorlage } from './Dialoge';
 import { Dialog, FerienBadge, Hilfe, PersonPunkt, Segmente } from './ui';
 
@@ -538,7 +538,7 @@ function TippEintrag({ c, plan, onUebernehmen }: { c: Chance; plan: Plan; onUebe
           <strong>
             {utText(c, plan)} → {tageText(c.tageFrei)} frei
           </strong>
-          <span className="chance-eff">{formatEffizienz(c.effizienz)}</span>
+          <EffizienzAbzeichen effizienz={c.effizienz} />
         </p>
         <p className="tipp-anlass">{c.anlass}</p>
         <p className="unterzeile">

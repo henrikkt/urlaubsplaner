@@ -202,20 +202,18 @@ export type IconName =
 
 export function Icon({ name }: { name: IconName }) {
   const pfade: Record<IconName, ReactNode> = {
+    // Sonne
     uebersicht: (
       <>
-        <rect x="3" y="3" width="7" height="9" rx="1.5" />
-        <rect x="14" y="3" width="7" height="5" rx="1.5" />
-        <rect x="14" y="12" width="7" height="9" rx="1.5" />
-        <rect x="3" y="16" width="7" height="5" rx="1.5" />
+        <circle cx="12" cy="12" r="4" />
+        <path d="M12 2.5v2M12 19.5v2M4.6 4.6 6 6M18 18l1.4 1.4M2.5 12h2M19.5 12h2M4.6 19.4 6 18M18 6l1.4-1.4" />
       </>
     ),
+    // Koffer
     bloecke: (
       <>
-        <path d="M8 6h13M8 12h13M8 18h13" />
-        <circle cx="4" cy="6" r="1" />
-        <circle cx="4" cy="12" r="1" />
-        <circle cx="4" cy="18" r="1" />
+        <rect x="3" y="7" width="18" height="13" rx="2.5" />
+        <path d="M9 7V5.5A1.5 1.5 0 0 1 10.5 4h3A1.5 1.5 0 0 1 15 5.5V7M8 7v13M16 7v13" />
       </>
     ),
     kalender: (
@@ -230,10 +228,13 @@ export function Icon({ name }: { name: IconName }) {
         <path d="M8 18v-3M12 18v-4M16 18v-3" />
       </>
     ),
+    // Schieberegler
     einstellungen: (
       <>
-        <circle cx="12" cy="12" r="3" />
-        <path d="M12 2v3M12 19v3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M2 12h3M19 12h3M4.9 19.1L7 17M17 7l2.1-2.1" />
+        <path d="M4 6h9M17 6h3M4 12h3M11 12h9M4 18h11M19 18h1" />
+        <circle cx="15" cy="6" r="2" />
+        <circle cx="9" cy="12" r="2" />
+        <circle cx="17" cy="18" r="2" />
       </>
     ),
     export: (
@@ -248,10 +249,11 @@ export function Icon({ name }: { name: IconName }) {
         <path d="M9 12l2 2 4-4" />
       </>
     ),
+    // Handy (als App installieren)
     hilfe: (
       <>
-        <circle cx="12" cy="12" r="9" />
-        <path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.6V14M12 17.5v.01" />
+        <rect x="7" y="2.5" width="10" height="19" rx="2.5" />
+        <path d="M11 18.5h2" />
       </>
     ),
     mehr: (

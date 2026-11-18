@@ -26,8 +26,17 @@ export function effizienzText(e: number | null): string {
   return `1 Urlaubstag ${genau ? '=' : '≈'} ${formatZahl(gerundet)} ${gerundet === 1 ? 'freier Tag' : 'freie Tage'}`;
 }
 
-/** Kurzform für Abzeichen: „1 : 4“ gelesen als „1 Urlaubstag bringt 4 freie Tage“ → „×4“-Ersatz in Worten */
+/** Kurzform „4 freie Tage“ (z. B. unter der Überschrift „Pro Urlaubstag“) */
 export function effizienzKurz(e: number | null): string {
   if (e === null || !Number.isFinite(e)) return '–';
-  return `${formatZahl(Math.round(e * 10) / 10)} freie Tage je Urlaubstag`;
+  const g = Math.round(e * 10) / 10;
+  return `${formatZahl(g)} ${g === 1 ? 'freier Tag' : 'freie Tage'}`;
+}
+
+/** Freundliche Einordnung statt „4,0x“: „Top-Tipp“ ab 3 freien Tagen je Urlaubstag, „Sehr gut“ ab 2 */
+export function effizienzBewertung(e: number | null): 'Top-Tipp' | 'Sehr gut' | null {
+  if (e === null || !Number.isFinite(e)) return null;
+  if (e >= 3) return 'Top-Tipp';
+  if (e >= 2) return 'Sehr gut';
+  return null;
 }

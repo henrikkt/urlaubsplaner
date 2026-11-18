@@ -13,7 +13,7 @@ import {
 } from '../lib/berechnung';
 import { formatDatumLang, formatZeitraum, heuteISO, MONATE } from '../lib/datum';
 import { bundeslandName } from '../lib/feiertage';
-import { effizienzText, formatEffizienz, formatZahl } from '../lib/format';
+import { effizienzText, formatZahl } from '../lib/format';
 import { aktiveVarianteVon, alleNamen, istPaar, personName, zeigeVarianten } from '../lib/plan';
 import type { PersonId, Plan, Variante } from '../lib/types';
 import { PersonPunkt } from './ui';
@@ -343,12 +343,12 @@ function Variantenvergleich({ plan, onWahl }: { plan: Plan; onWahl: (id: string)
     return ids.map((id, i) => `${personName(plan, id).slice(0, 1)} ${fmt(liste[i])}`).join(' · ');
   };
   const zeilen: { label: string; wert: (t: ProPerson<Tracker>, gemeinsam: number) => string }[] = [
-    { label: 'Urlaubstage verplant', wert: (t) => werte(t, (x) => x.verplant) },
-    { label: 'noch verfügbar', wert: (t) => werte(t, (x) => x.nochVerfuegbar) },
+    { label: 'Urlaubstage schon eingeplant', wert: (t) => werte(t, (x) => x.verplant) },
+    { label: 'noch übrig', wert: (t) => werte(t, (x) => x.nochVerfuegbar) },
     { label: 'Freie Tage insgesamt', wert: (t) => werte(t, (x) => x.freieTage) },
     {
-      label: 'Effizienz',
-      wert: (t) => werte(t, (x) => x.effizienz ?? 0, (n) => formatEffizienz(n > 0 ? n : null, 2)),
+      label: 'Freie Tage je Urlaubstag',
+      wert: (t) => werte(t, (x) => x.effizienz ?? 0, (n) => (n > 0 ? formatZahl(n, 1) : '–')),
     },
     { label: 'Urlaubstage in Schulferien', wert: (t) => werte(t, (x) => x.inSchulferien) },
     ...(paar ? [{ label: 'Gemeinsame Urlaubstage', wert: (_t: ProPerson<Tracker>, g: number) => formatZahl(g) }] : []),

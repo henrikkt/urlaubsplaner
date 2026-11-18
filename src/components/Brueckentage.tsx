@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { findeBrueckentage, type Chance } from '../lib/brueckentage';
 import { formatDatumKurz, formatZeitraum } from '../lib/datum';
-import { formatEffizienz, formatZahl, tageText } from '../lib/format';
+import { effizienzBewertung, formatZahl, tageText } from '../lib/format';
 import type { Plan } from '../lib/types';
 import type { NeuVorlage } from './Dialoge';
 import { FerienBadge, Hilfe } from './ui';
@@ -11,6 +11,13 @@ export function utText(c: Chance, plan: Plan): string {
   const werte = plan.personen.map((p) => c.ut[p.id] ?? 0);
   if (werte.every((w) => w === werte[0])) return `${formatZahl(c.utMax)} ${c.utMax === 1 ? 'Urlaubstag' : 'Urlaubstage'}`;
   return 'Urlaubstage: ' + plan.personen.map((p, i) => `${p.name} ${formatZahl(werte[i])}`).join(', ');
+}
+
+/** Freundliches Abzeichen statt „4,0x“ – nur bei besonders guten Gelegenheiten */
+export function EffizienzAbzeichen({ effizienz }: { effizienz: number | null }) {
+  const b = effizienzBewertung(effizienz);
+  if (!b) return null;
+  return <span className={`chance-eff ${b === 'Top-Tipp' ? 'chance-top' : ''}`}>{b === 'Top-Tipp' ? '⭐ Top-Tipp' : 'Sehr gut'}</span>;
 }
 
 export function ChancenListe({
@@ -29,7 +36,7 @@ export function ChancenListe({
           <div className="chance-haupt">
             <p className="chance-formel">
               <strong>{utText(c, plan)}</strong> → <strong>{tageText(c.tageFrei)} frei</strong>
-              <span className="chance-eff">{formatEffizienz(c.effizienz)}</span>
+              <EffizienzAbzeichen effizienz={c.effizienz} />
             </p>
             <p className="chance-anlass">
               <span className={`badge ${c.art === 'Brückentag' ? 'badge-bruecke' : 'badge-woche'}`}>{c.art}</span> {c.anlass}
@@ -39,9 +46,9 @@ export function ChancenListe({
           </div>
           <div className="chance-seite">
             <FerienBadge ferien={c.ferien} />
-            {c.bereitsVerplant && <span className="badge badge-aktiv">✓ bereits verplant</span>}
+            {c.bereitsVerplant && <span className="badge badge-aktiv">✓ schon eingeplant</span>}
             <button type="button" className="btn btn-primaer btn-klein" onClick={() => onUebernehmen(c)}>
-              Als Block übernehmen
+              In den Plan übernehmen
             </button>
           </div>
         </li>
@@ -81,8 +88,8 @@ export function Brueckentage({ plan, onUebernehmen }: { plan: Plan; onUebernehme
 
       <Hilfe>
         „Brückentag“ heißt: mit 1–2 Urlaubstagen einen Feiertag zu mindestens 4 freien Tagen verlängern. „Ganze
-        Woche“ heißt: die komplette Woche rund um den Feiertag frei nehmen. Die Zahl mit „x“ zeigt, wie viele freie
-        Tage du pro Urlaubstag bekommst – je höher, desto besser.
+        Woche“ heißt: die komplette Woche rund um den Feiertag frei nehmen. „⭐ Top-Tipp“ heißt: Für jeden
+        Urlaubstag bekommst du mindestens drei freie Tage.
       </Hilfe>
 
       {liste.length === 0 && <p className="leer">Keine Chancen gefunden.</p>}

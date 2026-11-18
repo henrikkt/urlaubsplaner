@@ -1,7 +1,7 @@
 import { useEffect, useId, useMemo, useState } from 'react';
 import { erstelleKontext, kennzahlenBlock, type Kontext } from '../lib/berechnung';
 import { formatDatumLang, formatZeitraum } from '../lib/datum';
-import { formatEffizienz, formatZahl } from '../lib/format';
+import { effizienzText, formatZahl } from '../lib/format';
 import {
   aktiveVarianteVon,
   aktualisiereBlock,
@@ -177,9 +177,14 @@ function NeuerBlockFormular({
       </div>
       {fehler.zeitraum && <p className="fehler">{fehler.zeitraum}</p>}
       <p className="vorschau">
-        {formatZahl(k.tageFrei)} Tage frei ·{' '}
-        {plan.personen.map((p) => `${paar ? `${p.name} ` : ''}${formatZahl(k.ut[p.id] ?? 0)} Urlaubstage`).join(' · ')} ·{' '}
-        {formatEffizienz(k.effizienz)} <FerienBadge ferien={k.ferien} />
+        <span>
+          <strong>{formatZahl(k.tageFrei)} freie Tage</strong> ·{' '}
+          {paar
+            ? `Urlaubstage: ${plan.personen.map((p) => `${p.name} ${formatZahl(k.ut[p.id] ?? 0)}`).join(', ')}`
+            : `${formatZahl(k.ut[plan.personen[0].id] ?? 0)} Urlaubstage`}
+          {k.effizienz !== null && <> · {effizienzText(k.effizienz)}</>}
+        </span>{' '}
+        <FerienBadge ferien={k.ferien} />
       </p>
       <div className="dialog-fuss">
         <button type="button" className="btn" onClick={onSchliessen}>

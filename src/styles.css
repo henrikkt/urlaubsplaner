@@ -2393,6 +2393,13 @@ h2 {
 .tracker-effizienz dd {
   font-weight: 750;
 }
+.chance-eff {
+  white-space: nowrap;
+}
+.chance-top {
+  background: var(--gelb-hell);
+  color: var(--gelb);
+}
 .gemeinsam-karte {
   border-top: 6px solid var(--gemeinsam);
 }
