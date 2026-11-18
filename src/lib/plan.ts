@@ -110,13 +110,15 @@ export function varianteName(plan: Plan, id: string): string {
 
 /** Text für die Varianten-Auswahl eines Blocks */
 export function blockVarianteText(plan: Plan, id: string): string {
+  // Kurz halten, damit Auswahlfelder auch auf schmalen Handys nichts abschneiden
   if (id === IMMER) {
     const normal = plan.varianten.filter((v) => !v.startetLeer).map((v) => v.name);
-    return normal.length > 1 ? `Immer (${normal.join(', ')})` : 'Immer';
+    const liste = normal.join(', ');
+    return normal.length > 1 && liste.length <= 10 ? `Immer (${liste})` : 'Immer';
   }
-  if (id === AUS) return 'Aus (nur Idee)';
+  if (id === AUS) return 'Aus (geparkt)';
   const v = plan.varianten.find((x) => x.id === id);
-  return v ? `Nur Variante ${v.name}${v.startetLeer ? ' (eigene Planung)' : ''}` : id;
+  return v ? `Nur Variante ${v.name}` : id;
 }
 
 export function blockVariantenOptionen(plan: Plan): string[] {

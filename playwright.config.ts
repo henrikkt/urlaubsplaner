@@ -7,7 +7,9 @@ import { defineConfig, devices } from '@playwright/test';
  * Jeder Test läuft in einem frischen Browser-Kontext – wie ein privates Fenster.
  */
 const kanal = process.env.PW_CHANNEL ?? 'msedge';
-const basis = 'http://localhost:4173/urlaubsplaner/';
+// PW_BASE_URL=https://<benutzer>.github.io/urlaubsplaner/ testet direkt die veröffentlichte Seite
+const extern = process.env.PW_BASE_URL;
+const basis = extern ?? 'http://localhost:4173/urlaubsplaner/';
 
 export default defineConfig({
   testDir: 'e2e',
@@ -22,12 +24,14 @@ export default defineConfig({
     timezoneId: 'Europe/Berlin',
     serviceWorkers: 'allow',
   },
-  webServer: {
-    command: 'npm run preview:pages',
-    url: basis,
-    reuseExistingServer: true,
-    timeout: 60_000,
-  },
+  webServer: extern
+    ? undefined
+    : {
+        command: 'npm run preview:pages',
+        url: basis,
+        reuseExistingServer: true,
+        timeout: 60_000,
+      },
   projects: [
     { name: 'desktop', use: { viewport: { width: 1280, height: 900 } } },
     { name: 'handy', use: { ...devices['Pixel 7'], channel: kanal || undefined } },

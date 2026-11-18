@@ -5,9 +5,9 @@ import type { PersonEingabe } from '../lib/plan';
 import type { TagesAnteil, Wochentag } from '../lib/types';
 
 export const ANTEILE: { wert: TagesAnteil; text: string }[] = [
-  { wert: 1, text: 'ganzer Urlaubstag' },
-  { wert: 0.5, text: 'halber Urlaubstag' },
-  { wert: 0, text: 'frei (kein Urlaub nötig)' },
+  { wert: 1, text: 'ganzer Tag' },
+  { wert: 0.5, text: 'halber Tag' },
+  { wert: 0, text: 'frei' },
 ];
 
 export function zahlAus(s: string): number {
@@ -166,10 +166,10 @@ export function PersonFelder({
           hilfe="laut Arbeitsvertrag"
         />
         <ZahlFeld
-          label="Resturlaub aus dem Vorjahr"
+          label="Resturlaub"
           wert={wert.resturlaub}
           onChange={(n) => onChange({ resturlaub: n })}
-          hilfe="0, wenn keiner"
+          hilfe="aus dem Vorjahr, 0 wenn keiner"
         />
       </div>
       <WochentageWahl
@@ -177,10 +177,13 @@ export function PersonFelder({
         wert={(wert.arbeitstage ?? [0, 1, 2, 3, 4]) as Wochentag[]}
         onChange={(w) => onChange({ arbeitstage: w })}
       />
-      <div className="feld-reihe">
-        <AnteilWahl label="Heiligabend (24.12.) zählt als" wert={wert.heiligabend} onChange={(w) => onChange({ heiligabend: w })} />
-        <AnteilWahl label="Silvester (31.12.) zählt als" wert={wert.silvester} onChange={(w) => onChange({ silvester: w })} />
-      </div>
+      <fieldset className="feldgruppe">
+        <legend className="feld-titel">Wie viel Urlaub kosten Heiligabend und Silvester?</legend>
+        <div className="feld-reihe">
+          <AnteilWahl label="Heiligabend (24.12.)" wert={wert.heiligabend} onChange={(w) => onChange({ heiligabend: w })} />
+          <AnteilWahl label="Silvester (31.12.)" wert={wert.silvester} onChange={(w) => onChange({ silvester: w })} />
+        </div>
+      </fieldset>
     </div>
   );
 }

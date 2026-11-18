@@ -329,10 +329,17 @@ main:focus {
   }
   .seitenleiste nav ul {
     flex-direction: row;
-    justify-content: space-around;
+    justify-content: flex-start;
   }
   .seitenleiste nav li {
-    flex: 1;
+    flex: 1 1 0;
+    min-width: 0;
+  }
+  .nav-kurz {
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
   .seitenleiste nav a {
     flex-direction: column;
@@ -696,7 +703,10 @@ main:focus {
   accent-color: var(--akzent);
 }
 
-/* Formularfelder */
+/* Formularfelder
+ * Ein Feld besteht aus Label, Eingabe und optionalem Hinweis. In einer Feld-Reihe liegen diese drei
+ * Teile per Subgrid in gemeinsamen Zeilen: Eingaben nebeneinanderliegender Felder sind immer bündig,
+ * egal wie lang ein Label ist. Unter 480 px Breite sind Feld-Reihen einspaltig. */
 .feld {
   display: flex;
   flex-direction: column;
@@ -708,10 +718,37 @@ main:focus {
   font-weight: 600;
   color: var(--text-2);
 }
-.feld-reihe {
+.feld-reihe,
+.editor-oben {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-  gap: 12px;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
+  column-gap: 12px;
+  row-gap: 6px;
+  align-items: start;
+}
+/* Block-Editor: kurze Felder (Variante, Wer, Von, Bis) passen zu viert nebeneinander */
+.editor-oben {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
+}
+@supports (grid-template-rows: subgrid) {
+  .feld-reihe > .feld,
+  .editor-oben > .feld {
+    display: grid;
+    grid-row: span 3;
+    grid-template-rows: subgrid;
+    align-content: start;
+  }
+  /* Label unten in seiner Zeile: einzeilige Labels sitzen direkt über der Eingabe */
+  .feld-reihe > .feld > :first-child,
+  .editor-oben > .feld > :first-child {
+    align-self: end;
+  }
+}
+@media (max-width: 479px) {
+  .feld-reihe,
+  .editor-oben {
+    grid-template-columns: minmax(0, 1fr);
+  }
 }
 .feld-zeile {
   display: flex;
@@ -734,6 +771,23 @@ textarea {
 }
 textarea {
   resize: vertical;
+}
+/* Eigener Pfeil statt des Browser-Pfeils: Der Platz für den Text ist damit genau bekannt
+   (Inhalt = Breite − Innenabstände). Gezeichnet mit currentColor → passt im Dunkelmodus,
+   keine Bilddatei nötig (CSP). */
+select {
+  appearance: none;
+  -webkit-appearance: none;
+  padding-right: 38px !important;
+  background-image:
+    linear-gradient(45deg, transparent 50%, currentColor 50%),
+    linear-gradient(135deg, currentColor 50%, transparent 50%);
+  background-position:
+    calc(100% - 21px) 50%,
+    calc(100% - 15px) 50%;
+  background-size: 6px 6px;
+  background-repeat: no-repeat;
+  text-overflow: ellipsis;
 }
 input:hover,
 select:hover,
@@ -1097,21 +1151,9 @@ textarea:hover {
   font-size: 1.05rem;
   font-weight: 600;
 }
-.editor-oben {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px;
-}
+/* .editor-oben nutzt das gemeinsame Feld-Raster (siehe Formularfelder); der Anlass steht in einer eigenen Reihe */
 .editor-oben .feld-name {
   grid-column: 1 / -1;
-}
-@media (min-width: 1200px) {
-  .editor-oben {
-    grid-template-columns: minmax(0, 2.2fr) repeat(4, minmax(0, 1fr));
-  }
-  .editor-oben .feld-name {
-    grid-column: auto;
-  }
 }
 .editor-mitte {
   display: flex;
@@ -1119,12 +1161,6 @@ textarea:hover {
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-}
-.dialog .editor-oben {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-}
-.dialog .editor-oben .feld-name {
-  grid-column: 1 / -1;
 }
 .kennzahlen {
   display: flex;
@@ -1140,6 +1176,8 @@ textarea:hover {
   min-width: 82px;
 }
 .kennzahlen dt {
+  overflow-wrap: anywhere;
+  hyphens: auto;
   font-size: 0.72rem;
   color: var(--text-2);
   font-weight: 600;
@@ -1442,7 +1480,7 @@ textarea:hover {
 @media (max-width: 599px) {
   .kennzahlen {
     display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 120px), 1fr));
     width: 100%;
   }
   .kennzahlen > div {
@@ -1633,7 +1671,7 @@ textarea:hover {
   font-size: 0.85rem;
 }
 .symbol-wahl {
-  width: 64px !important;
+  width: 88px !important;
   flex: none;
 }
 section > .karte {
@@ -1738,6 +1776,9 @@ textarea {
   .seitenleiste nav a .icon {
     width: 24px;
     height: 24px;
+  }
+  .seitenleiste nav a .nav-kurz {
+    display: block;
   }
 }
 /* Desktop-Navigation zeigt alles direkt, "Mehr" nur auf dem Handy */
@@ -1927,14 +1968,32 @@ textarea {
   background: var(--akzent-hell);
 }
 
-/* Wochentage wählen */
+/* Wochentage wählen: immer 7 gleich breite Spalten in einer Zeile (auch bei 320 px) */
 .wochentage-wahl {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
   gap: 6px;
+  max-width: 420px;
 }
 .wochentage-wahl label {
   position: relative;
+  min-width: 0;
+}
+@media (max-width: 379px) {
+  .wochentage-wahl {
+    gap: 4px;
+  }
+  /* sehr schmale Handys (z. B. iPhone SE, 320 px): etwas weniger Rand, damit lange Texte
+     wie „Mecklenburg-Vorpommern“ in die Auswahlfelder passen */
+  .karte {
+    padding: 16px 14px;
+  }
+  select {
+    padding-right: 32px !important;
+    background-position:
+      calc(100% - 18px) 50%,
+      calc(100% - 12px) 50%;
+  }
 }
 .wochentage-wahl input {
   position: absolute;
@@ -1945,8 +2004,8 @@ textarea {
 .wochentage-wahl span {
   display: grid;
   place-items: center;
-  width: 48px;
-  height: 46px;
+  width: 100%;
+  min-height: 46px;
   border: 2px solid var(--rand);
   border-radius: var(--radius-klein);
   font-weight: 700;

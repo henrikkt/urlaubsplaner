@@ -99,7 +99,7 @@ export function BlockEditor({
               onChange={(e) => onChange({ variante: e.target.value })}
             >
               <option value={IMMER}>Ja, zählt mit</option>
-              <option value={AUS}>Nein, geparkt (nur Idee)</option>
+              <option value={AUS}>Nein, geparkt</option>
             </select>
           </div>
         )}
@@ -116,7 +116,7 @@ export function BlockEditor({
           </div>
         )}
         <div className="feld">
-          <label htmlFor={`${id}-von`}>Von (erster freier Tag)</label>
+          <label htmlFor={`${id}-von`}>Von</label>
           <input
             id={`${id}-von`}
             type="date"
@@ -130,7 +130,7 @@ export function BlockEditor({
           </small>
         </div>
         <div className="feld">
-          <label htmlFor={`${id}-bis`}>Bis (letzter freier Tag)</label>
+          <label htmlFor={`${id}-bis`}>Bis</label>
           <input
             id={`${id}-bis`}
             type="date"
