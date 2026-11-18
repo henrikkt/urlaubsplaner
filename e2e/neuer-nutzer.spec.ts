@@ -32,7 +32,7 @@ async function assistent(page: Page, projekt: string) {
   await page.getByRole('button', { name: 'Überspringen →' }).click();
   await expect(page.getByRole('heading', { name: `Vorschläge für ${jahr}` })).toBeVisible();
   await bild(page, '03-assistent-vorschlaege', projekt);
-  await page.getByRole('button', { name: /Plan (mit \d+ Blöcken? )?anlegen/ }).click();
+  await page.getByRole('button', { name: /Plan (mit \d+ (Block|Blöcken) )?anlegen/ }).click();
   await expect(page.getByRole('heading', { name: `Urlaub ${jahr}` })).toBeVisible();
 }
 
