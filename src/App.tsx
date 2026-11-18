@@ -67,6 +67,14 @@ export function App() {
   const route = useRoute();
   const [neuVorlage, setNeuVorlage] = useState<NeuVorlage | null>(null);
   const [bearbeiteIds, setBearbeiteIds] = useState<string[] | null>(null);
+  const [erfolg, setErfolg] = useState<{ text: string; nr: number } | null>(null);
+
+  // Erfolgsmeldung nach ein paar Sekunden wieder ausblenden
+  useEffect(() => {
+    if (!erfolg) return;
+    const t = window.setTimeout(() => setErfolg(null), 3500);
+    return () => window.clearTimeout(t);
+  }, [erfolg]);
 
   const setVariante = useCallback(
     (v: string) => aendere((p) => (p.aktiveVariante === v ? p : { ...p, aktiveVariante: v })),
@@ -224,9 +232,22 @@ export function App() {
         onAnlegen={(b) => {
           aendere((p) => fuegeBlockHinzu(p, b));
           setNeuVorlage(null);
+          setErfolg({ text: `Eingetragen: ${b.name || 'Urlaub'}`, nr: Date.now() });
         }}
       />
       <BlockBearbeitenDialog ids={bearbeiteIds} plan={plan} aendere={aendere} onSchliessen={() => setBearbeiteIds(null)} />
+
+      {/* Live-Bereich bleibt immer im DOM, damit Screenreader neue Meldungen zuverlässig vorlesen */}
+      <div className="toast-bereich nicht-drucken" role="status" aria-live="polite">
+        {erfolg && (
+          <p key={erfolg.nr} className="toast">
+            <span className="toast-haken" aria-hidden="true">
+              ✓
+            </span>
+            {erfolg.text} – die Vorfreude beginnt!
+          </p>
+        )}
+      </div>
     </div>
   );
 }

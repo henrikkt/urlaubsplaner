@@ -2400,6 +2400,171 @@ h2 {
   background: var(--gelb-hell);
   color: var(--gelb);
 }
+/* Links in der Akzentfarbe (Kontrast im Test geprüft). :where() → Spezifität 0,
+   damit Navigation, Skip-Link und „Mehr“-Liste ihre eigenen Farben behalten. */
+:where(a:not(.btn)) {
+  color: var(--akzent-text);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+
+/* Illustrationen */
+.illu {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+.begruessung-bild {
+  width: 132px;
+  animation: sanft-einblenden 0.6s ease both;
+}
+@media (max-width: 599px) {
+  .begruessung-bild {
+    position: absolute;
+    top: 10px;
+    right: 8px;
+    width: 72px;
+  }
+  .begruessung-hallo {
+    padding-right: 72px;
+  }
+}
+.leer-zustand {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 8px 24px;
+  padding: 24px 16px;
+  margin-bottom: 16px;
+  text-align: center;
+  color: var(--text-2);
+}
+.leer-zustand .illu {
+  width: 120px;
+}
+.leer-zustand p {
+  margin: 0;
+  max-width: 34ch;
+}
+.leer-zustand strong {
+  color: var(--text);
+  font-size: 1.1rem;
+}
+.assistent-bild {
+  width: 170px;
+  margin: 0 auto 8px;
+}
+
+/* Erfolgsmeldung („Toast“) */
+.toast-bereich {
+  position: fixed;
+  left: 50%;
+  bottom: 24px;
+  z-index: 60;
+  transform: translateX(-50%);
+  width: max-content;
+  max-width: calc(100vw - 32px);
+  pointer-events: none;
+}
+.toast {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  padding: 12px 20px;
+  border-radius: 999px;
+  background: var(--text);
+  color: var(--bg);
+  font-weight: 700;
+  box-shadow: var(--schatten-gross);
+  animation: toast-rein 0.35s cubic-bezier(0.2, 0.9, 0.3, 1.2) both;
+}
+.toast-haken {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--gemeinsam);
+  color: var(--gemeinsam-text);
+  font-size: 0.9rem;
+}
+@media (max-width: 899px) {
+  .toast-bereich {
+    bottom: calc(84px + env(safe-area-inset-bottom));
+  }
+}
+
+/* Dezente Bewegung: Seiten blenden sanft ein, Knöpfe reagieren beim Antippen */
+main > section {
+  animation: sanft-einblenden 0.25s ease both;
+}
+.btn {
+  transition:
+    background 0.15s,
+    border-color 0.15s,
+    transform 0.15s,
+    box-shadow 0.15s;
+}
+.btn:hover {
+  transform: translateY(-1px);
+}
+.btn:active {
+  transform: translateY(0) scale(0.98);
+}
+.btn-primaer:hover {
+  box-shadow: 0 6px 16px color-mix(in srgb, var(--akzent) 35%, transparent);
+}
+.chance,
+.tipp-eintrag,
+.vorschlag {
+  transition:
+    transform 0.15s,
+    box-shadow 0.15s;
+}
+.chance:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--schatten-gross);
+}
+@keyframes sanft-einblenden {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes toast-rein {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Wer weniger Bewegung möchte, bekommt keine Animationen */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .btn:hover,
+  .chance:hover {
+    transform: none;
+  }
+}
+
 .gemeinsam-karte {
   border-top: 6px solid var(--gemeinsam);
 }

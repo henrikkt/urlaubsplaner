@@ -13,6 +13,7 @@ import {
 import type { Plan, Urlaubsblock } from '../lib/types';
 import { BlockEditor } from './BlockEditor';
 import { UeberschneidungsHinweis } from './Uebersicht';
+import { KofferBild } from './Illustrationen';
 import { Hilfe } from './ui';
 
 export function Bloecke({
@@ -65,7 +66,14 @@ export function Bloecke({
       <UeberschneidungsHinweis liste={ueber} plan={plan} />
 
       {plan.bloecke.length === 0 && (
-        <p className="leer">Noch keine Urlaubsblöcke. Lege oben einen neuen an oder nutze den Brückentag-Finder.</p>
+        <div className="leer-zustand">
+          <KofferBild />
+          <p>
+            <strong>Der Koffer ist noch leer.</strong>
+            <br />
+            Lege oben einen Urlaub an oder schau in den <a href="#/brueckentage">Brückentag-Finder</a>.
+          </p>
+        </div>
       )}
 
       <ul className="block-liste">

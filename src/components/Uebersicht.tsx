@@ -16,6 +16,7 @@ import { bundeslandName } from '../lib/feiertage';
 import { effizienzText, formatZahl } from '../lib/format';
 import { aktiveVarianteVon, alleNamen, istPaar, personName, zeigeVarianten } from '../lib/plan';
 import type { PersonId, Plan, Variante } from '../lib/types';
+import { SonneBild } from './Illustrationen';
 import { PersonPunkt } from './ui';
 
 export function VariantenUmschalter({
@@ -220,7 +221,7 @@ function Begruessung({ plan }: { plan: Plan }) {
         {!n ? (
           <>
             <h2 id="titel-begruessung" className="begruessung-titel">
-              Noch kein Urlaub geplant – Zeit zum Träumen! <span aria-hidden="true">☀️</span>
+              Noch kein Urlaub geplant – Zeit zum Träumen!
             </h2>
             <p className="begruessung-unter">Der Brückentag-Finder zeigt dir die besten Gelegenheiten für {plan.planungsjahr}.</p>
             <a className="btn begruessung-knopf" href="#/brueckentage">
@@ -244,8 +245,7 @@ function Begruessung({ plan }: { plan: Plan }) {
                 <>
                   Noch <span className="begruessung-zahl">{n.tageBis}</span> Tage bis zu {euer} nächsten Urlaub
                 </>
-              )}{' '}
-              <span aria-hidden="true">{n.laufend ? '🌴' : '☀️'}</span>
+              )}
             </h2>
             <p className="begruessung-unter">
               <strong>{n.block.name || 'Urlaub'}</strong> · {formatZeitraum(n.block.von, n.block.bis)}
@@ -253,6 +253,7 @@ function Begruessung({ plan }: { plan: Plan }) {
           </>
         )}
       </div>
+      <SonneBild className="begruessung-bild" />
     </section>
   );
 }

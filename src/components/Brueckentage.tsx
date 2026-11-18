@@ -4,6 +4,7 @@ import { formatDatumKurz, formatZeitraum } from '../lib/datum';
 import { effizienzBewertung, formatZahl, tageText } from '../lib/format';
 import type { Plan } from '../lib/types';
 import type { NeuVorlage } from './Dialoge';
+import { SonneBild } from './Illustrationen';
 import { FerienBadge, Hilfe } from './ui';
 
 /** "3 Urlaubstage" oder bei unterschiedlichen Werten "Urlaubstage: Anna 3, Ben 2" */
@@ -92,7 +93,16 @@ export function Brueckentage({ plan, onUebernehmen }: { plan: Plan; onUebernehme
         Urlaubstag bekommst du mindestens drei freie Tage.
       </Hilfe>
 
-      {liste.length === 0 && <p className="leer">Keine Chancen gefunden.</p>}
+      {liste.length === 0 && (
+        <div className="leer-zustand">
+          <SonneBild />
+          <p>
+            <strong>Hier gibt es gerade keine Brückentage.</strong>
+            <br />
+            {nurFerienfrei ? 'Vielleicht mit Schulferien? Nimm den Haken oben heraus.' : 'In diesem Jahr fallen die Feiertage ungünstig.'}
+          </p>
+        </div>
+      )}
 
       <ChancenListe liste={liste} plan={plan} onUebernehmen={(c) => onUebernehmen(vorlageAus(c, plan))} />
     </section>

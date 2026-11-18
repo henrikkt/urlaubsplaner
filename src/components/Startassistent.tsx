@@ -9,6 +9,7 @@ import { neuerBlock, neuerPlan, standardRegionaleFeiertage, type PersonEingabe }
 import { IMMER, STANDARD_FARBEN, type BesondererTag, type Plan } from '../lib/types';
 import { EffizienzAbzeichen, utText } from './Brueckentage';
 import { BundeslandWahl, jahresOptionen, PersonFelder, RegionaleFeiertageWahl } from './Formular';
+import { PalmeBild } from './Illustrationen';
 import { FerienBadge, Hilfe } from './ui';
 
 const SCHRITTE = ['Plan', 'Personen', 'Urlaub', 'Besondere Tage', 'Vorschläge'] as const;
@@ -189,6 +190,7 @@ export function Startassistent({
 
       {schritt === 0 && (
         <>
+          {!onAbbrechen && <PalmeBild className="assistent-bild" />}
           {!onAbbrechen && (
             <Hilfe>
               In fünf kurzen Schritten richtest du deine Urlaubsplanung ein. Alles bleibt auf diesem Gerät – es gibt kein
